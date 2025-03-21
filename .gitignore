@@ -162,4 +162,4 @@ cython_debug/
 # automated setup & pc specific venv files 
 /venv/*
 /__setup/__setupFiles/__exes/*
-/__setup/_batchLaunchers/allie
+/__setup/__setupFiles/_batchLaunchers/allie
