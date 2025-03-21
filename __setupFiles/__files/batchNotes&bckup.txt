@@ -1,0 +1,89 @@
+# how to uninstall packages if fresh reinstall required
+# python -m pip uninstall -y blosc2 msgpack ndindex numexpr numpy packaging pandas python-dateutil pytz py-cpuinfo scipy six tzdata tables
+
+# how to list all the above packages 
+# pip list "blosc2 msgpack ndindex numexpr numpy packaging pandas python-dateutil pytz py-cpuinfo scipy six tzdata tables"
+
+# how to grab current installations like below
+# pip freeze | findstr "blosc2 msgpack ndindex numexpr numpy packaging pandas python-dateutil pytz py-cpuinfo scipy six tzdata tables tzdata opencv-python jdcal trackpy h5py numba Pillow pint PySerial pyqt
+graph matplotlib"
+
+
+bckup of fso requirements file
+
+
+alabaster==0.7.16
+attrs==25.1.0
+babel==2.17.0
+blosc2==2.5.1
+certifi==2025.1.31
+charset-normalizer==3.4.1
+click==8.1.8
+click-plugins==1.1.1
+cligj==0.7.2
+colorama==0.4.6
+contourpy==1.3.0
+cycler==0.12.1
+deprecation==2.1.0
+docutils==0.21.2
+fiona==1.10.1
+flexcache==0.3
+flexparser==0.4
+fonttools==4.56.0
+geopandas==0.9.0
+h5py==3.13.0
+idna==3.10
+imagesize==1.4.1
+importlib-metadata==8.6.1
+importlib-resources==6.5.2
+jdcal==1.4.1
+jinja2==3.1.6
+jupyter-packaging==0.9.1
+kiwisolver==1.4.7
+llvmlite==0.43.0
+looseversion==1.3.0
+lxml==5.3.1
+MarkupSafe==3.0.2
+matplotlib==3.9.4
+msgpack==1.1.0
+ndindex==1.9.2
+numba==0.60.0
+numexpr==2.10.0
+numpy==1.23.0
+numpydoc==1.1.0
+opencv-python==4.11.0.86
+packaging==24.2
+pandas==1.5.3
+pandas-datareader==0.9.0
+pillow==11.1.0
+Pint==0.24.4
+platformdirs==4.3.6
+py-cpuinfo==9.0.0
+pygments==2.19.1
+pyparsing==3.2.1
+pyproj==3.6.1
+pyqtgraph==0.13.7
+pyserial==3.5
+python-dateutil==2.8.2
+pytz==2025.1
+PyYAML==6.0.2
+requests==2.32.3
+scipy==1.13.1
+shapely==2.0.7
+six==1.17.0
+snowballstemmer==2.2.0
+sphinx==7.4.7
+sphinxcontrib-applehelp==2.0.0
+sphinxcontrib-devhelp==2.0.0
+sphinxcontrib-htmlhelp==2.1.0
+sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-qthelp==2.0.0
+sphinxcontrib-serializinghtml==2.0.0
+tables==3.9.2
+tomli==2.2.1
+tomlkit==0.13.2
+trackpy==0.6.4
+typing-extensions==4.12.2
+tzdata==2025.1
+urllib3==2.3.0
+zipp==3.21.0
