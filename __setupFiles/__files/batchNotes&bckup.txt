@@ -5,7 +5,7 @@
 # pip list "blosc2 msgpack ndindex numexpr numpy packaging pandas python-dateutil pytz py-cpuinfo scipy six tzdata tables"
 
 # how to grab current installations like below
-# pip freeze | findstr "blosc2 msgpack ndindex numexpr numpy packaging pandas python-dateutil pytz py-cpuinfo scipy six tzdata tables tzdata opencv-python jdcal trackpy h5py numba Pillow pint PySerial pyqt
+# pip freeze "blosc2 msgpack ndindex numexpr numpy packaging pandas python-dateutil pytz py-cpuinfo scipy six tzdata tables tzdata opencv-python jdcal trackpy h5py numba Pillow pint PySerial pyqt
 graph matplotlib"
 
 
