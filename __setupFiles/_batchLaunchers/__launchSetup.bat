@@ -39,7 +39,7 @@ echo ___________________________________________________________________________
 :: ________________________________________________________________________________________________________________________________________
                     %= USER may have to change below! =%
 
-set allie=1
+set allie=0
 
 :: expedite path setting for allie on sslap
 if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\" & set "PATH_PYTHON=C:\Program Files\Python39\python.exe" & goto :done )
@@ -63,14 +63,14 @@ echo. & if %allie% ==1 ( echo -^> Allie params set^! & echo. )
 
 :: ________________________________________________________________________________________________________________________________________
 :: bool if user wants option to skip many qs and go for defaults
-set ask=0
+set ask=1
 
 rem if python already installed on pc
 set skipPython=0
 rem bools if user wants debug terminal startup or change installs
 set skipVenv=0
 rem user wants to install git bash and executables in exe.tar
-set skipExe=1
+set skipExe=0
 set skipGit=0
 set skipBonus=0
 
@@ -425,29 +425,8 @@ if %errorlevel% GTR 1 ( echo ERROR %errorlevel% bonusI: attempt to install %bonu
     echo done uninstallin yoooo & goto :installPython
    ) else if %errorlevel% == 0 ( echo      DONE    ^| yas  & set "PATH_PYTHON=%cleanInstall%" )
 
-echo hello & pause
-dir /s /b C:\ | findstr /i ".*\\py.*\\python.exe"
-if %errorlevel% neq 0 ( echo ERROR no python installed? & pause & if %debug% ==1 ( cmd /k ) else ( call :close ) )
-
-:: iterate through each pos py and find location
-for /F "tokens=*" %A in ('dir /s /b C:\ ^| findstr /i ".*\\py.*\\python.exe"') do (
-    echo found snakes in the grass...
-    echo %A & pause
-    set testpy=%A
-
-    for /f "delims=" %%a in ('!testpy! --version 2^>nul') do set "output=%%a"
-
-    if !errorlevel! neq 0 ( echo ERROR no python installed? & pause & call :notThisOne )
-    if !errorlevel! == 0 ( echo -n | set /p=-^> installed python path^: !testpy! )
-    if !testpy! == !PYTHON_PATH! ( set PYTHON_PATH=!testpy! & echo match ^! )
-    echo output !output!
-
-    :notThisOne
-    echo not this one
-)
-
 :: delete dir with .exe file post install
-echo -------------------------------------------- & call :removePy
+echo -------------------------------------------- 
 
 :: ________________________________________________________________________________________________________________________________________
 
