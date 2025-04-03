@@ -39,10 +39,10 @@ echo ___________________________________________________________________________
 :: ________________________________________________________________________________________________________________________________________
                     %= USER may have to change below! =%
 
-set allie=0
+set allie=1
 
 :: expedite path setting for allie on sslap
-if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\" & set "PATH_PYTHON=C:\Program Files\Python39\python.exe" & goto :done )
+if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\ozOptics\__setup" & set "PATH_PYTHON=C:\Python_3913" & goto :done )
 
 :: path to repo
 :: nuc1
@@ -56,11 +56,11 @@ set "PATH_PYTHON=C:\WPy64-3940\python-3.9.4.amd64\"
 :: alt path to python baldur?
 rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\"
 
-set "venvName=__ozVenv"
+
 
 :done
 echo. & if %allie% ==1 ( echo -^> Allie params set^! & echo. )
-
+set "venvName=__ozVenv"
 :: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_oz_startup_altfileloc.bat instead
 
 :: ________________________________________________________________________________________________________________________________________
@@ -269,7 +269,7 @@ echo      -^> working directory ^> !PATH_!
 :: ask user which for installed python dir
 
 :: skip asking python qs if normal setup w/o debug
-if %ask% == 0 ( set "PATH_PYTHON=%PATH_PYTHON%\python.exe" & goto :decompressExe )
+if %ask% == 0 ( goto :decompressExe )
 
 echo Please input path to python^.exe: 
 set /p answer="Global Path > "
@@ -456,6 +456,7 @@ echo --------------------------------------------
 :chkVenv
 
 set "venvPath_=%PATH_%\%venvName%"
+echo venv Path: %venvPath_%
 :: Use the correct Python path inside the venv
 set PYTHON_EXE=%PATH_PYTHON%\python.exe
 
@@ -473,7 +474,7 @@ if exist %venvPath_% (
     echo boom ) 
 
 :: create venv fresh each time 
-if not exist %venvPath_% ( echo NO virutal environment present at: !venvPath_!^! & echo NOTE: Double check path location ideally repo folder/dir ^& close if incorrect^. & goto :createVenv )
+if not exist %venvPath_% ( echo NO virutal environment present at: %venvPath_%^! & echo NOTE: Double check path location ideally repo folder/dir ^& close if incorrect^. & goto :createVenv )
 
 echo.
 echo --------------------------------------------
@@ -573,30 +574,21 @@ if %debug% == 0 (
 
 :: _______________________________________________________
 
-
 if %dots% ==1 ( call :killDots )
 
-:: _______________________________________________________
 
-:fix_pyebus
-echo -n | set /p="+ pyebus ... "
-
-for %%A in ("%PATH_%") do (
-    set "repoPath=%%~dpA"
-    set "repoPath=!repoPath!sysCode\"
-    echo REPO at: !repoPath!
-    )
-
-xcopy "%repoPath%camera_control\pyebus\" "%venvPath_%\Lib\site-packages\pyebus" /E /I /Y >nul 2>&1
-if %errorlevel% == 0  ( echo      ^| done 
-) else if %errorlevel% == 4  ( echo ERROR xcopy %errorlevel%: BAD cmd syntax & call :close 
-) else if %errorlevel% ==1 ( echo ERROR xcopyNO: NO Files found in pyebus & call :close 
-) else ( echo ERROR xcopy FINAL%errorlevel%: starting cmd line & cmd /k ) 
 :: ________________________________________________________________________________________________________________________________________
             %= KEEP THE INSTALLATION TERMINAL OPEN till user closes =%
 :lastjubba
 echo --------------------------------------------
 echo -n |set/p="last jubba: "
+
+
+for %%A in ("%PATH_%") do (
+    set "repoPath=%%~dpA"
+    set "repoPath=!repoPath!"
+    echo REPO at: !repoPath!
+    )
 
 :setIcon
 :: Get the current directory of the script
@@ -608,8 +600,8 @@ set "mainIcon=%iconPath%__main.ico"
 
 
 set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
-set "shortcutozPath=%repoPath%\LaunchSystem.lnk"
-set "desktopPath=%USERPROFILE%\Desktop\freeSpaceOptics.lnk"
+set "shortcutozPath=%repoPath%\launch_ozOptics.lnk"
+set "desktopPath=%USERPROFILE%\Desktop\launch_ozOptics.lnk"
 
 
 
@@ -627,7 +619,7 @@ echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
 
-if %ask% ==0 ( echo fasterer^! & call :close ) else if %debug% == 0 ( echo Done & call :close ) else ( echo last Q! ) 
+if %ask% ==0 ( echo fasterer^^! & goto :close ) else if %debug% == 0 ( echo Done^^! & goto :close ) else ( echo last Q! )
 rem ask user which python to use
 echo Setup done^! Do you to input any cmds? & set /p answer="Answer (y/n):"
 
@@ -645,27 +637,28 @@ if /i !answer! == n ( echo __setup done^! & call :close )
 :: if using goto :label note batch will compile all labels below :label referenced
 
 :removeVenv
-    rmdir /s /q %PATH_%\%venvName% 2>&1 || echo ERROR !errorlevel!: tried to rm old EXES dir & exit /b
+    rmdir /s /q %PATH_%\%venvName% 2>&1 || echo ERROR %errorlevel%: tried to rm old EXES dir & exit /b
     rem when no error or
     echo -n | set /p="deletered that dusty env^! " & exit /b
 
 :createVenv
     rem new venv creation
-    "%PYTHON_EXE%" -m venv %venvPath_%\ 2>&1 || ( echo ERRORa !errorlevel!: Attempted to make env. && if %debug% == 1 ( echo Enabling cmd... && echo Ready! & cmd /k ) else ( echo oopsie & call :close ) )
+    pause
+    %PYTHON_EXE% -m venv %venvPath_%\ 2>&1 || ( ( echo ERRORa %errorlevel%: Attempted to make env. & echo python^.exe "%PYTHON_EXE%" & echo %venvPath_%\ ) && if %debug% == 1 ( echo Enabling cmd... && echo Ready! & cmd /k ) else ( echo oopsie & pause && call :close ) )
     rem if %debug% == 0 ( echo NOT in DEBUG MODE... & echo -n | ping -n 10 127.0.0.1 >nul && echo moving on! )
     echo -n | set /p="Fresh venv created! "
     echo ----- & goto :actVenv
 
 :removePy
-    rmdir /s /q %setupPath_%\__files\ 2>&1 || echo ERROR !errorlevel!: tried to rm old python dir  & exit /b
+    rmdir /s /q %setupPath_%\__files\ 2>&1 || echo ERROR %errorlevel%: tried to rm old python dir  & exit /b
     echo -n | set /p="deletered those nasty pythons^! " & exit /b
 
 :removeExe
-    rmdir /s /q %setupPath_%__exes\exe\ 2>&1 || echo ERROR !errorlevel!: tried to rm old EXES dir  & exit /b
+    rmdir /s /q %setupPath_%__exes\exe\ 2>&1 || echo ERROR %errorlevel%: tried to rm old EXES dir  & exit /b
     echo -n | set /p="deletered those nasty exes^! " & exit /b
 
 :removeExeExe
-    rmdir /s /q %setupPath_%__exes\exe\ 2>&1 || echo ERROR !errorlevel!: tried to rm old EXES dir  & exit /b
+    rmdir /s /q %setupPath_%__exes\exe\ 2>&1 || echo ERROR %errorlevel%: tried to rm old EXES dir  & exit /b
     echo -n | set /p="deletered those nasty exes^! " & exit /b
 
 :killDots
@@ -697,8 +690,11 @@ if /i !answer! == n ( echo __setup done^! & call :close )
 :: ensure venv deactivated and variable locality ends
 
 :close
-    deactivate & echo vevn deactivated^.
-    endlocal & echo --------------^> closing^!
+    echo deactivating vevn ...& pause
+
+    echo --------------^> closing^!
     rem inform user of closing and close after number of sec delay
-    echo -n | ping -n %closetime% 127.0.0.1 >nul 
+    echo -n | ping -n %closetime% 127.0.0.1 >nul
+    deactivate
+    endlocal
     exit
