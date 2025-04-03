@@ -46,9 +46,9 @@ if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\" & set "PATH_PYTHON=C:\Prog
 
 :: path to repo
 :: nuc1
-rem set "PATH_=C:\OTTRepos\FSOTerminal\__setup"
+rem set "PATH_=C:\OTTRepos\ozOptics\__setup"
 :: alt path to repo, baldur?
-set "PATH_=C:\Users\fcomb\OTTRepos\FSOTerminal\__setup"
+set "PATH_=C:\Users\fcomb\OTTRepos\ozOptics\__setup"
 
 :: path to installed python on pc
 :: nuc1
@@ -56,15 +56,16 @@ set "PATH_PYTHON=C:\WPy64-3940\python-3.9.4.amd64\"
 :: alt path to python baldur?
 rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\"
 
-set "venvName=__fsoVenv"
+set "venvName=__ozVenv"
 
 :done
 echo. & if %allie% ==1 ( echo -^> Allie params set^! & echo. )
 
-:: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_FSO_startup_altfileloc.bat instead
+:: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_oz_startup_altfileloc.bat instead
 
 :: ________________________________________________________________________________________________________________________________________
 :: bool if user wants option to skip many qs and go for defaults
+
 set ask=1
 
 rem if python already installed on pc
@@ -92,7 +93,7 @@ set dots=0
 set debug=0
 
 
-:: default for fso python install & setup repo structure
+:: default for oz python install & setup repo structure
 set "setupFiles=__setupFiles\"
 
 
@@ -107,7 +108,8 @@ echo --------------------------------------------------------------------
 :: user interaction with setup
 
 :: no fast setup go to usual setup
-if %ask% == 0 ( goto :askDebug )
+echo %ask%
+if %ask% == 0 ( goto :askDebug ) else if %ask% == 1 ( echo lets do it )
 
 
 :askFast
@@ -152,9 +154,6 @@ if /i !answer! neq y (
 :: _______________________________________________________
 :: ________________________________________________________________________________________________________________________________________
 
-:: normal setup if python installed -> ask for path & repo path 
-if %skipPython% == 1 ( echo python is setup already by bool & goto :askPath )
-
 
 :askPy
 
@@ -174,6 +173,9 @@ if /i !answer! neq y (
 :: Ask user for Python type (WinPython or Python)
 
 :askPyType
+
+:: normal setup if python installed -> ask for path & repo path 
+if %skipPython% == 1 ( echo python is setup already by bool & goto :askPath )
 
 echo Select Python type: WinPython or Python
 set /p pyType="Answer (WinPython/Python = w/p only): "
@@ -606,7 +608,7 @@ set "mainIcon=%iconPath%__main.ico"
 
 
 set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
-set "shortcutFSOPath=%repoPath%\LaunchSystem.lnk"
+set "shortcutozPath=%repoPath%\LaunchSystem.lnk"
 set "desktopPath=%USERPROFILE%\Desktop\freeSpaceOptics.lnk"
 
 
@@ -615,7 +617,7 @@ set "desktopPath=%USERPROFILE%\Desktop\freeSpaceOptics.lnk"
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.IconLocation = '!setupIcon!'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Setup icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutFSOPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
+powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutozPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try again^. & pause && call :close )
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
