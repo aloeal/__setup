@@ -161,7 +161,7 @@ cython_debug/
 
 # automated setup & pc specific venv files 
 
-__setupFiles/__exes
+__setupFiles/__exes/*
 __setupFiles/_batchLaunchers/allie
 
 /__fsoVenv
