@@ -163,6 +163,5 @@ cython_debug/
 
 __setupFiles/_batchLaunchers/allie
 
-/__fsoVenv
 __launchSetup.lnk
-/__ozVenv
+# /__ozVenv
