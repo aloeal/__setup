@@ -1,13 +1,11 @@
 @echo off
+:: -- NIST ozOptics Software --
 
-:: -- NIST Free Space Optics Terminal Software --  
-
-
-:: This bat file launches eBUS software for camera/galvo control
+:: This bat file launches ozOptics polarization controller software
 :: - @ECHO lines do not print to console, only use rem within loops and :: outside loops for comments
 
 :: NEW Setup: 
-:: change PATH_ on line 15 in "" to path where >\FSOTerminal-main\camera_control\cameraprocess is located on PC getting eBUS
+:: change PATH_ on line 15 in "" to path where >sysCode\ozOptics\ is located on PC getting eBUS
 :: change PATH_PYTHON on line 20 in "" to path where python executable (python.exe) is located on PC 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -16,11 +14,15 @@ setlocal enabledelayedexpansion
 
 :: ________________________________________________________________________________________________________________________________________
                 %= USER may have to change below! =%
+set allie=1
+
+:: expedite path setting for allie on sslap
+if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\ozOptics\__setup" & set "PATH_PYTHON=C:\Python_3913" & goto :done )
 
 :: path to repo
-set "PATH_=C:\OTTRepos\FSOTerminal\"
+set "PATH_=C:\OTTRepos\ozOptics\"
 :: alt path to repo
-rem set "PATH_=C:\Users\fcomb\OTTRepos\FSOTerminal\"
+rem set "PATH_=C:\Users\fcomb\OTTRepos\ozOptics\"
 
 :: path to installed python on pc
 set "PATH_PYTHON=C:\WPy64-3940\python-3.9.4.amd64\python.exe"
@@ -32,12 +34,12 @@ rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\python.exe"
 :: ________________________________________________________________________________________________________________________________________
 :: bool if user wants option to debug terminal startup 
 set debug=1
-
+set "venvName=__ozVenv"
 :: ________________________________________________________________________________________________________________________________________
 
-echo --------------- Free Space Optics Terminal Software --------------------  
-echo NIST: 675.02                                     Last mod: March 12 2025
-echo                                                    Allie Christensen                                                          
+echo ------------ ozOptics Polarization Controller Software -----------------
+echo NIST: 675.02                                     Last mod:  April 3 2025
+echo                                        Allie Christensen ^& Chris Dennis
 echo ------------------------------------------------------------------------
 echo ________________________________________________________________________
 echo.
@@ -65,13 +67,13 @@ if !answer! neq y (
 :startFSO
 
 :: dynamic path DO NOT CHANGE below
-set "SETUP=%PATH_%venv\Scripts\" 
-set "WORK_DIR=%PATH_%camera_control\cameraprocess\"
+set "SETUP=%PATH_%%venvName%\Scripts\"
+set "WORK_DIR=%PATH_%sysCode\"
 
 cd %PATH_%
 
 :: ________________________________________________________________________________________________________________________________________
-echo                         FSO venv: !SETUP!
+echo                         ozOptics venv: !SETUP!
 echo ________________________________________________________________________
 echo.
 :: ________________________________________________________________________________________________________________________________________
@@ -99,17 +101,19 @@ cd
 
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
-    echo debuggin^^! 
-    cmd /k && python camera_processor_V2.py
+    echo debuggin^^!
+    echo copy me^! ^> python guiEPC400^.py
+    cmd /k
 )
-if %debug% == 0 ( 
-    echo mode & pause 
-    python camera_processor_V2.py 
+if %debug% == 0 (
+    pause
+    echo ozOptics Polarization controller gui starting...
+    python guiEPC400.py
 )
 
 :: Check if Python inside the venv exists
 if %errorlevel% neq 0 (
-    echo ERROR: FSO startup!
+    echo ERROR: ozOptics startup!
     if %debug% neq 0 ( echo debuggin^^! & cmd /k ) else ( exit /b )
 	)
 
