@@ -174,7 +174,7 @@ if /i !answer! neq y (
 
 :askPyType
 
-:: normal setup if python installed -> ask for path & repo path 
+:: normal setup if python installed -> ask for path & repo path
 if %skipPython% == 1 ( echo python is setup already by bool & goto :askPath )
 
 echo Select Python type: WinPython or Python
@@ -245,10 +245,10 @@ if /i !answer! neq y (
 echo Please input path to directory with that CONTAINS __setup and __setup/__setupFiles folder: & set /p answer=" Global Path > "
 
 :: update user
-if exist !answer!\ ( 
-    echo __setup\ ok 
-    if exist !anwser!\__setupFiles\ ( 
-        echo __setupFiles\ ok 
+if exist !answer!\ (
+    echo __setup\ ok
+    if exist !anwser!\__setupFiles\ (
+        echo __setupFiles\ ok
         goto :setPath
     )
 
@@ -271,17 +271,17 @@ echo      -^> working directory ^> !PATH_!
 :: skip asking python qs if normal setup w/o debug
 if %ask% == 0 ( goto :decompressExe )
 
-echo Please input path to python^.exe: 
+echo Please input path to python^.exe:
 set /p answer="Global Path > "
-pause 
+pause
 :: grab errors from wrong path input by user
 if exist !answer! ( echo -^> python directory ^> !PATH_PYTHON! & goto :fixed)
 if exist !answer!\ ( echo -^> python directory ^> !PATH_PYTHON! & goto :fixed)
 
 if not exist !answer! ( echo ERROR askPyPath: path DNE !answer!^! Double check^. & if exist "!answer!\" ( echo fixed1 & goto :fixed )  )
 if not exist !answer!*.exe ( echo ERROR askPyPath: path DNE !answer!^! Double check^. & if exist !answer!\*.exe (echo fixed2 &  goto :fixed )  )
-echo ERROR: Fix path 
-goto :askPyPath 
+echo ERROR: Fix path
+goto :askPyPath
 
 :fixed
 set "PATH_PYTHON=!answer!\python.exe" && echo     -^> python.exe directory ^> !PATH_PYTHON!
@@ -449,7 +449,7 @@ if %errorlevel% GTR 1 ( echo ERROR %errorlevel% bonusI: attempt to install %bonu
    ) else if %errorlevel% == 0 ( echo      DONE    ^| yas  & set "PATH_PYTHON=%cleanInstall%" )
 
 :: delete dir with .exe file post install
-echo -------------------------------------------- 
+echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -471,9 +471,9 @@ if exist %venvPath_% (
     rem default will delete old venv each time
     if %debug% == 1 ( echo -n | set /p=rming... & call :removeVenv )
 
-    echo boom ) 
+    echo boom )
 
-:: create venv fresh each time 
+:: create venv fresh each time
 if not exist %venvPath_% ( echo NO virutal environment present at: %venvPath_%^! & echo NOTE: Double check path location ideally repo folder/dir ^& close if incorrect^. & goto :createVenv )
 
 echo.
@@ -559,16 +559,16 @@ if %dots% == 1 (
  )
 
 :: suppress output if not debuggin ">nul"
-if %debug% == 0 ( 
-    python -m pip install -r %setupPath_%__files\requirements.txt >nul 2>&1 
+if %debug% == 0 (
+    python -m pip install -r %setupPath_%__files\requirements.txt >nul 2>&1
     if !errorlevel! neq 0 ( echo ERROR pkgsD: hit another package error,  %errorlevel% )
-    if !errorlevel! == 0  ( echo      ^| done ) 
-) else if %ask% == 0 ( 
-    python -m pip install -r %setupPath_%__files\requirements.txt 2>&1 
+    if !errorlevel! == 0  ( echo      ^| done )
+) else if %ask% == 0 (
+    python -m pip install -r %setupPath_%__files\requirements.txt 2>&1
     if !errorlevel! neq 0 ( echo ERROR pkgs: hit another package error,  %errorlevel% )
     if !errorlevel! == 0  ( echo      ^| done )
-) else (     
-    python -m pip install -r %setupPath_%__files\requirements.txt 2>&1 
+) else (
+    python -m pip install -r %setupPath_%__files\requirements.txt 2>&1
     if !errorlevel! neq 0 ( echo ERROR pkgsF: hit another package error,  %errorlevel% )
     if !errorlevel! == 0  ( echo      ^| done ) )
 
@@ -603,18 +603,18 @@ set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
 set "shortcutozPath=%repoPath%\launch_ozOptics.lnk"
 set "desktopPath=%USERPROFILE%\Desktop\launch_ozOptics.lnk"
 
-
+set "targetPath=%setupPath_%__batchLaunchers"
 
 :: Use PowerShell to update the shortcut
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.IconLocation = '!setupIcon!'; $shortcut.Save()"
+powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.TargetPath = '%targetPath%\__launchSetup.bat'; $shortcut.IconLocation = '!setupIcon!'; $shortcut.WorkingDirectory = '%setupPath_%'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Setup icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutozPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
+powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutozPath!'); $shortcut.TargetPath =  '%targetPath%\_LauncherMain.bat'; $shortcut.IconLocation = '!mainIcon!'; $shortcut.WorkingDirectory = '%repoPath%sysCode'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try again^. & pause && call :close )
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
+powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.TargetPath =  '%targetPath%\_LauncherMain.bat'; $shortcut.IconLocation = '!mainIcon!'; $shortcut.WorkingDirectory = '%repoPath%sysCode'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
-echo Shortcut icons updated successfully^! 
+echo Shortcut icons updated successfully^!
 echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
