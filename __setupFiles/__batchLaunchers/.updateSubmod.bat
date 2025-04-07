@@ -18,7 +18,7 @@ echo Written by: Allie Christensen
 echo ---------------------------------------------------------------------------------------
 echo.
 echo -n | set /p="Submodule updated?       "
-git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & goto :confirm) 
+git submodule update --remote >nul 2>&1 || ( echo ERROR %errorlevel%  & goto :confirm) 
 
 echo ✓
 
@@ -29,11 +29,9 @@ goto :close
 
 :confirm
 
-:: as user which python dir
-echo Overwrite local? & set /p over="y or n: "
+echo Attempt to update repo but local changes will be overwritten! Overwrite local? & set /p over="y or n: "
 
-:: when changing path option enabled
-if /i !over! == y ( git submodule update --remote  --force || ( echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close ) )
+if /i !over! == y ( git submodule update --remote  --force >nul 2>&1 || ( echo. & echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close ) )
 
 if /i !over! neq y (
 
