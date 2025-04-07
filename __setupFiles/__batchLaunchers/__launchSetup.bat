@@ -42,13 +42,13 @@ echo ___________________________________________________________________________
 set allie=1
 
 :: expedite path setting for allie on sslap
-if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\ozOptics\__setup" & set "PATH_PYTHON=C:\Python_3913" & goto :done )
+if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\ozOptics\__ozOsetup" & set "PATH_PYTHON=C:\Python_3913" & goto :done )
 
 :: path to repo
 :: nuc1
-rem set "PATH_=C:\OTTRepos\ozOptics\__setup"
+rem set "PATH_=C:\OTTRepos\ozOptics\__ozOsetup"
 :: alt path to repo, baldur?
-set "PATH_=C:\Users\fcomb\OTTRepos\ozOptics\__setup"
+set "PATH_=C:\Users\fcomb\OTTRepos\ozOptics\__ozOsetup"
 
 :: path to installed python on pc
 :: nuc1
@@ -242,11 +242,11 @@ if /i !answer! neq y (
 :askPath
 :: ask user which for repo dir
 
-echo Please input path to directory with that CONTAINS __setup and __setup/__setupFiles folder: & set /p answer=" Global Path > "
+echo Please input path to directory with that CONTAINS __ozOsetup and __ozOsetup/__setupFiles folder: & set /p answer=" Global Path > "
 
 :: update user
 if exist !answer!\ ( 
-    echo __setup\ ok 
+    echo __ozOsetup\ ok 
     if exist !anwser!\__setupFiles\ ( 
         echo __setupFiles\ ok 
         goto :setPath
@@ -255,9 +255,9 @@ if exist !answer!\ (
 )
 
 :: grab errors from wrong path input by user
-if not exist !answer!\ ( echo ERROR0a askPatah: no __setup dir !answer!^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
+if not exist !answer!\ ( echo ERROR0a askPatah: no __ozOsetup dir !answer!^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
 if not exist !answer!\__setupFiles\ ( echo  ERROR0b: no files dir !answer!^! & echo NOTE: Ideally repo folder/dir^. & goto :askPath )
-if not exist !answer! ( echo ERROR0c askPatah: no __setup dir !answer!^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
+if not exist !answer! ( echo ERROR0c askPatah: no __ozOsetup dir !answer!^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
 
 
 :setPath
@@ -628,7 +628,7 @@ if /i !answer! neq y (
     echo -n |set /p=meow no last jubbie^!
     if /i !answer! neq n ( echo "ERROR lastjubba: Please only enter" & pause & goto :lastjubba )
     )
-if /i !answer! == n ( echo __setup done^! & call :close )
+if /i !answer! == n ( echo __ozOsetup done^! & call :close )
 
 
 
