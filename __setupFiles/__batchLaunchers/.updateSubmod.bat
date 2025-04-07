@@ -15,7 +15,7 @@ cd ..\..\.. & echo -- PARENT REPO --
 
 git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & goto :confirm) 
 
-echo -n | set /p=Updated submodule^!
+echo -n | set /p=Submodule updated --^> ✓
 
 goto :close
 
