@@ -160,7 +160,7 @@ if /i !answer! neq y (
 :askPy
 
 :: as user which python dir
-echo Install python? & echo -n | set /p answer=" Answer (y/n): "
+echo Install python? & set /p answer=" Answer (y/n): "
 
 :: when changing path option enabled
 if /i !answer! == y ( echo lets get all pythons setups & set skipPython = 0 & set skipVenv=0 )
@@ -179,8 +179,7 @@ if /i !answer! neq y (
 :: normal setup if python installed -> ask for path & repo path 
 if %skipPython% == 1 ( echo python is setup already by bool & goto :askPath )
 
-echo Select Python type: WinPython or Python
-set /p pyType="Answer (WinPython/Python = w/p only): "
+echo Select Python type: WinPython or Python & set /p pyType="Answer (WinPython/Python = w/p only): "
 
 
 set "pyType=!pyType!"
