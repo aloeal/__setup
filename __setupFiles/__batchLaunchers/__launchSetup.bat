@@ -524,7 +524,7 @@ if %errorlevel% neq 0 (
     ) else (
         echo installed          ^| done
     )
-) else ( echo           ^| done )
+) else ( echo           ^| installed )
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -533,14 +533,14 @@ if %errorlevel% neq 0 (
 
 echo -n | set /p="+ git..."
 
-if %skipGit% == 1 ( echo skipping git... & goto :install_pkgs )
+if %skipGit% == 1 ( echo           ^| skipping git... & goto :install_pkgs )
 
 where git >nul 2>&1
 if %errorlevel% neq 0 (
     echo " -^> installing..."
     winget install Git.Git
     if !errorlevel! neq 0 ( echo ERROR: Git installation failed^. & pause ) else ( echo installed        ^| done )
-) else ( echo           ^| done  )
+) else ( echo           ^| installed  )
 
 :: ________________________________________________________________________________________________________________________________________
 :install_pkgs
@@ -617,7 +617,7 @@ echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
 
-if %ask% ==0 ( echo fasterer^^! & goto :close ) else if %debug% == 0 ( echo Done^^! & goto :close ) else ( echo last Q! )
+if %ask% ==0 ( echo ...lightning finish^^! & goto :close ) else if %debug% == 0 ( echo ...fast close^^! & goto :close ) else ( echo last Q! )
 rem ask user which python to use
 echo Setup done^! Do you to input any cmds? & set /p answer="Answer (y/n):"
 
