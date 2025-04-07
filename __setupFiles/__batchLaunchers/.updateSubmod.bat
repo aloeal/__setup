@@ -15,7 +15,7 @@ cd ..\..\.. & echo -- PARENT REPO --
 
 git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & goto :confirm) 
 
-echo Updated submodule^!
+echo -n | set /p=Updated submodule^!
 
 goto :close
 
@@ -31,7 +31,7 @@ echo Overwrite local? & set /p over="y or n: "
 if /i !over! == y ( git submodule update --remote  --force || ( echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close ) )
 
 if /i !over! neq y (
-    echo ummm....nah
+
     rem grab other errors
     if /i !over! neq n ( echo. & echo ERROR: Please input "y" or "n" & echo Please try again^. & goto :confirm )
     if /i !over! == n ( echo -n | set /p="... exiting!" && goto :close ) )
@@ -41,9 +41,9 @@ if /i !over! neq y (
 
 :close
 
-echo --------------^> closing^!
+echo  --------------^> closing^!
 rem inform user of closing and close after number of sec delay
-echo -n | ping -n 3 127.0.0.1 >nul
+echo -n | ping -n 5 127.0.0.1 >nul
 
 endlocal
 exit /b 
