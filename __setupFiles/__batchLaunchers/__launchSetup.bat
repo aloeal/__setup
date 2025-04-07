@@ -28,7 +28,7 @@ setlocal enabledelayedexpansion
 
 
 echo ________________________________ venv auto setup ______________________________________
-echo NIST: 675.02                                                   Last mod: March 27 2025
+echo NIST: 675^.02                                                   Last mod: March 27 2025
 echo Written by: Allie Christensen
 echo _______________________________________________________________________________________
 echo            Refer to README to see information regarding this script
