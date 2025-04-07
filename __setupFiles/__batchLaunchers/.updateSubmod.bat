@@ -31,7 +31,7 @@ goto :close
 
 echo Attempt to update repo but local changes will be overwritten^! Overwrite local? & set /p over="y or n: "
 
-if /i !over! == y ( git submodule update --remote  --force >nul 2>&1 || ( echo. & echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close ) )
+if /i !over! == y ( git submodule update --remote --force >nul 2>&1 || ( echo. & echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close ) )
 
 if /i !over! neq y (
 

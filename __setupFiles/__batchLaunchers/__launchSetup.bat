@@ -4,7 +4,7 @@
 :: -> && a requirements.txt is provided at PATH_
 
 :: ensure setup submodule is up to date with most recent commit
-call .updateSubmod.bat
+call .updateSubmod.bat >nul 
 
 :: ________________________________________________________________________________________________________________________________________
 
