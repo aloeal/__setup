@@ -36,11 +36,13 @@ rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\python.exe"
 set debug=1
 set "venvName=__ozVenv"
 :: ________________________________________________________________________________________________________________________________________
-
-echo ------------ ozOptics Polarization Controller Software -----------------
+echo _______________________________________________________________________
+echo ----------------- DCS Combs Controller Software -----------------------
 echo NIST: 675.02                                     Last mod:  April 3 2025
-echo                                        Allie Christensen ^& Chris Dennis
+echo                                                       Allie Christensen 
 echo ------------------------------------------------------------------------
+echo      File initiates Dual-Comb Spectroscopy Combs Controller System
+echo                Refer to README to specific information
 echo ________________________________________________________________________
 echo.
 echo.
@@ -102,18 +104,18 @@ cd
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
     echo debuggin^^!
-    echo copy me^! ^> python guiEPC400^.py
+    echo copy me^! ^> python main^.py
     cmd /k
 )
 if %debug% == 0 (
     pause
-    echo ozOptics Polarization controller gui starting...
-    python guiEPC400.py
+    echo dcs Combs controller System starting...
+    python main.py
 )
 
 :: Check if Python inside the venv exists
 if %errorlevel% neq 0 (
-    echo ERROR: ozOptics startup!
+    echo ERROR: dcs Combs startup!
     if %debug% neq 0 ( echo debuggin^^! & cmd /k ) else ( exit /b )
 	)
 
