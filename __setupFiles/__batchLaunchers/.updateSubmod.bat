@@ -20,7 +20,7 @@ echo.
 echo -n | set /p="Submodule updated?       "
 git submodule update --remote >nul 2>&1 || ( echo. & echo ERROR %errorlevel% & goto :confirm ) 
 
-echo Yas^!^!
+echo Yas^^!!!!
 
 goto :close
 
@@ -29,9 +29,9 @@ goto :close
 
 :confirm
 
-echo Attempt to update repo but local changes will be overwritten^! Overwrite local? & set /p over="y or n: "
+echo Attempt to update repo but local changes will be overwritten^^! Overwrite local? & set /p over="y or n: "
 
-if /i !over! == y ( git submodule update --remote --force >nul 2>&1 || ( echo. & echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close ) )
+if /i !over! == y ( git submodule update --remote --force >nul 2>&1 || ( echo. & echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^^! ) else ( echo Try again. ) & goto :close ) )
 
 if /i !over! neq y (
 
@@ -44,7 +44,7 @@ if /i !over! neq y (
 
 :close
 
-echo  --------------^> closing^!
+echo  --------------^> closing^^!
 rem inform user of closing and close after number of sec delay
 echo -n | ping -n 5 127.0.0.1 >nul
 

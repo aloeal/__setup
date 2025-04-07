@@ -63,7 +63,7 @@ rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\"
 
 
 :done
-echo. & if %allie% ==1 ( echo -^> Allie params set^! & echo. )
+echo. & if %allie% ==1 ( echo -^> Allie params set^^! & echo. )
 set "venvName=__ozVenv"
 :: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_oz_startup_altfileloc.bat instead
 
@@ -141,7 +141,7 @@ echo DEBUG setup mode? & set /p answer=" Answer (y/n): "
 if /i !answer! == y ( echo DEBUG MODE: & set debug=1 & echo -------------------------------------------- & goto :askPyType )
 
 if /i !answer! neq y (
-    echo -n | set /p=meow no^! ...meow...
+    echo -n | set /p=meow no^^! ...meow...
     rem grab other errors
     if /i !answer! neq n ( echo. & echo ERROR askPy: Please input "y" or "n" & echo Please try again^. & goto :askDebug )
 
@@ -227,16 +227,16 @@ if %debug% == 1 (
 echo -n | set /p=Change default paths (see above)? & echo -n | set /p answer=" Answer (y/n): "
 
 :: when changing path option enabled
-if /i !answer! == y ( echo. & echo okie dokie articokie...change it up^! & goto :askPath )
+if /i !answer! == y ( echo. & echo okie dokie articokie...change it up^^! & goto :askPath )
 
 if /i !answer! neq y (
-    echo -n |set /p=lets keep it to the regs :P ^!
+    echo -n |set /p=lets keep it to the regs :P ^^!
 
     rem grab other errors
     if /i !answer! neq n ( echo. & echo ERROR askPy: Please input "y" or "n" & echo Please try again^. & goto :askChange )
 
     rem user wants defaults
-    echo -n | set /p=... yas^!  & goto :decompressExe )
+    echo -n | set /p=... yas^^!  & goto :decompressExe )
 
 :: _______________________________________________________
                 %= runs only if debug(above) bool is true =%
@@ -256,9 +256,9 @@ if exist !answer!\ (
 )
 
 :: grab errors from wrong path input by user
-if not exist !answer!\ ( echo ERROR0a askPatah: no __ozOsetup dir !answer!^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
-if not exist !answer!\__setupFiles\ ( echo  ERROR0b: no files dir !answer!^! & echo NOTE: Ideally repo folder/dir^. & goto :askPath )
-if not exist !answer! ( echo ERROR0c askPatah: no __ozOsetup dir !answer!^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
+if not exist !answer!\ ( echo ERROR0a askPatah: no __ozOsetup dir !answer!^^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
+if not exist !answer!\__setupFiles\ ( echo  ERROR0b: no files dir !answer!^^! & echo NOTE: Ideally repo folder/dir^. & goto :askPath )
+if not exist !answer! ( echo ERROR0c askPatah: no __ozOsetup dir !answer!^^! & echo NOTE: Double check path location ideally repo folder/dir^. & goto :askPath )
 
 
 :setPath
@@ -279,8 +279,8 @@ pause
 if exist !answer! ( echo -^> python directory ^> !PATH_PYTHON! & goto :fixed)
 if exist !answer!\ ( echo -^> python directory ^> !PATH_PYTHON! & goto :fixed)
 
-if not exist !answer! ( echo ERROR askPyPath: path DNE !answer!^! Double check^. & if exist "!answer!\" ( echo fixed1 & goto :fixed )  )
-if not exist !answer!*.exe ( echo ERROR askPyPath: path DNE !answer!^! Double check^. & if exist !answer!\*.exe (echo fixed2 &  goto :fixed )  )
+if not exist !answer! ( echo ERROR askPyPath: path DNE !answer!^^! Double check^. & if exist "!answer!\" ( echo fixed1 & goto :fixed )  )
+if not exist !answer!*.exe ( echo ERROR askPyPath: path DNE !answer!^^! Double check^. & if exist !answer!\*.exe (echo fixed2 &  goto :fixed )  )
 echo ERROR: Fix path 
 goto :askPyPath 
 
@@ -302,7 +302,7 @@ if /i !answer! neq y (
     echo -n |set /p=ummm....
     rem grab other errors
     if /i !answer! neq n ( echo. & echo ERROR askPYPy: Please input "y" or "n" & echo Please try again^. & goto :askExe )
-    echo -n | set /p="...  echo skipping seeing the exes...YAS^!" & set skipBonus=1 & goto :installBonus )
+    echo -n | set /p="...  echo skipping seeing the exes...YAS^^!" & set skipBonus=1 & goto :installBonus )
 
 
 
@@ -330,7 +330,7 @@ if %skipExe% == 1 ( goto :installBonus )
 if not exist %setupPath_%__exes (
     echo jammi & pause
 
-    if %debug% == 1 ( echo debugger mess -^> where the EXEs be at?^! & cmd /k )
+    if %debug% == 1 ( echo debugger mess -^> where the EXEs be at?^^! & cmd /k )
 
     mkdir %setupPath_%__exes
     rem grab errors
@@ -414,7 +414,7 @@ set cleanInstall=C:\!cleanVersion!
 
 if not exist "%cleanInstall%" (
     echo panda
-    if %debug% == 1 ( echo DNE -^> where the !pyType! be at?^! )
+    if %debug% == 1 ( echo DNE -^> where the !pyType! be at?^^! )
     mkdir %cleanInstall%
     rem grab errors
     if !errorlevel! == 0 ( echo %cleanInstall% dir created^. )
@@ -434,10 +434,10 @@ echo verrbbbb %idVer%
 winget install "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" --location "%cleanInstall%" --no-upgrade --wait --silent
 if %errorlevel% GTR 1 ( echo ERROR %errorlevel% bonusI: attempt to install %bonusI% & call :close
 ) else if %errorlevel% LSS 0 (
-    echo -n | set /p="%pyType% is installed already^!..."
+    echo -n | set /p="%pyType% is installed already!..."
     winget list --id "%pyType%.%pyType%"
     rem winget uninstall Python.Python.3.9 --version 3.9.4
-    if %ask% == 0 ( echo %pyType% overwrite...impending^! & winget uninstall "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" && goto :installPython || ( echo beans fix me & cmd /k ) )
+    if %ask% == 0 ( echo %pyType% overwrite...impending^^! & winget uninstall "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" && goto :installPython || ( echo beans fix me & cmd /k ) )
     echo past ask
 
     if %debug% == 1 (
@@ -475,7 +475,7 @@ if exist %venvPath_% (
     echo boom ) 
 
 :: create venv fresh each time 
-if not exist %venvPath_% ( echo NO virutal environment present at: %venvPath_%^! & echo NOTE: Double check path location ideally repo folder/dir ^& close if incorrect^. & goto :createVenv )
+if not exist %venvPath_% ( echo NO virutal environment present at: %venvPath_%^^! & echo NOTE: Double check path location ideally repo folder/dir ^& close if incorrect^. & goto :createVenv )
 
 echo.
 echo --------------------------------------------
@@ -615,21 +615,21 @@ if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try aga
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.TargetPath =  '%targetPath%\_LauncherMain.bat'; $shortcut.IconLocation = '!mainIcon!'; $shortcut.WorkingDirectory = '%repoPath%sysCode'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
-echo Shortcut icons updated successfully^! 
+echo Shortcut icons updated successfully^^! 
 echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
 
 if %ask% ==0 ( echo ...lightning finish^^! & goto :close ) else if %debug% == 0 ( echo ...fast close^^! & goto :close ) else ( echo last Q! )
 rem ask user which python to use
-echo Setup done^! Do you to input any cmds? & set /p answer="Answer (y/n):"
+echo Setup done^^! Do you to input any cmds? & set /p answer="Answer (y/n):"
 
 if /i !answer! == y ( echo Setting up cmd prompt... & cmd /k )
 if /i !answer! neq y (
-    echo -n |set /p=meow no last jubbie^!
+    echo -n |set /p=meow no last jubbie^^!
     if /i !answer! neq n ( echo "ERROR lastjubba: Please only enter" & pause & goto :lastjubba )
     )
-if /i !answer! == n ( echo __ozOsetup done^! & call :close )
+if /i !answer! == n ( echo __ozOsetup done^^! & call :close )
 
 
 
@@ -640,7 +640,7 @@ if /i !answer! == n ( echo __ozOsetup done^! & call :close )
 :removeVenv
     rmdir /s /q %PATH_%\%venvName% 2>&1 || echo ERROR %errorlevel%: tried to rm old EXES dir & exit /b
     rem when no error or
-    echo -n | set /p="deletered that dusty env^! " & exit /b
+    echo -n | set /p="deletered that dusty env^^! " & exit /b
 
 :createVenv
     rem new venv creation
@@ -652,15 +652,15 @@ if /i !answer! == n ( echo __ozOsetup done^! & call :close )
 
 :removePy
     rmdir /s /q %setupPath_%\__files\ 2>&1 || echo ERROR %errorlevel%: tried to rm old python dir  & exit /b
-    echo -n | set /p="deletered those nasty pythons^! " & exit /b
+    echo -n | set /p="deletered those nasty pythons^^! " & exit /b
 
 :removeExe
     rmdir /s /q %setupPath_%__exes\exe\ 2>&1 || echo ERROR %errorlevel%: tried to rm old EXES dir  & exit /b
-    echo -n | set /p="deletered those nasty exes^! " & exit /b
+    echo -n | set /p="deletered those nasty exes^^! " & exit /b
 
 :removeExeExe
     rmdir /s /q %setupPath_%__exes\exe\ 2>&1 || echo ERROR %errorlevel%: tried to rm old EXES dir  & exit /b
-    echo -n | set /p="deletered those nasty exes^! " & exit /b
+    echo -n | set /p="deletered those nasty exes^^! " & exit /b
 
 :killDots
     taskkill /FI "WINDOWTITLE eq ProgressDots" /T /F >nul 2>&1
@@ -693,7 +693,7 @@ if /i !answer! == n ( echo __ozOsetup done^! & call :close )
 :close
     echo deactivating vevn ...
 
-    echo --------------^> closing^!
+    echo --------------^> closing^^!
     rem inform user of closing and close after number of sec delay
     echo -n | ping -n %closetime% 127.0.0.1 >nul
     deactivate
