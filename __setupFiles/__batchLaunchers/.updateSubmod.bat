@@ -19,7 +19,7 @@ setlocal enabledelayedexpansion
 
 cd ..\..\.. & echo -- PARENT REPO --
 
-git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo w/ submodule but repo has local changes that will be overwritten. & goto :confirm) 
+git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & pause & goto :confirm) 
 
 echo Updated submodule^!
 
@@ -28,18 +28,23 @@ goto :close
 
 :confirm
 
+
+
+
 :: as user which python dir
-echo Overwrite local? 
-echo -n | set /p answer=" Answer (y/n): "
+echo Overwrite local?  & echo -n | set /p over="y or n: "
+
 
 :: when changing path option enabled
-if /i !answer! == y ( echo okeeeee & git submodule update --remote  --force || ( echo ERROR %errorlevel%: TRY again. & goto :close)  )
+if /i !over! == y ( 
+    git submodule update --remote  --force || ( echo ERROR %errorlevel%: TRY again. & goto :close) 
+)
 
-if /i !answer! neq y (
+if /i !over! neq y (
     echo -n |set /p=ummm....nah
     rem grab other errors
-    if /i !answer! neq n ( echo. & echo ERROR: Please input "y" or "n" & echo Please try again^. & goto :confirm )
-    if /i !answer! == n ( echo -n | set /p="... exiting!" & pause && goto :close ) )
+    if /i !over! neq n ( echo. & echo ERROR: Please input "y" or "n" & echo Please try again^. & pause & goto :confirm )
+    if /i !over! == n ( echo -n | set /p="... exiting!" & pause && goto :close ) )
 
 
 
