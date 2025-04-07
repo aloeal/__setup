@@ -46,13 +46,13 @@ echo ___________________________________________________________________________
 set allie=1
 
 :: expedite path setting for allie on sslap
-if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\ozOptics\__ozOsetup" & set "PATH_PYTHON=C:\Python_3913" & goto :done )
+if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\DCSCombControl\__dcsCombsetup" & set "PATH_PYTHON=C:\Python_3913" & goto :done )
 
 :: path to repo
 :: nuc1
-rem set "PATH_=C:\OTTRepos\ozOptics\__ozOsetup"
+rem set "PATH_=C:\OTTRepos\DCSCombControl\__dcsCombsetup"
 :: alt path to repo, baldur?
-set "PATH_=C:\Users\fcomb\OTTRepos\ozOptics\__ozOsetup"
+set "PATH_=C:\Users\fcomb\OTTRepos\DCSCombControl\__dcsCombsetup"
 
 :: path to installed python on pc
 :: nuc1
@@ -64,7 +64,7 @@ rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\"
 
 :done
 echo. & if %allie% ==1 ( echo -^> Allie params set^^! & echo. )
-set "venvName=__ozVenv"
+set "venvName=__dcsVenv"
 :: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_oz_startup_altfileloc.bat instead
 
 :: ________________________________________________________________________________________________________________________________________
@@ -601,10 +601,10 @@ set "mainIcon=%iconPath%__main.ico"
 
 
 set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
-set "shortcutozPath=%repoPath%\launch_ozOptics.lnk"
-set "desktopPath=%USERPROFILE%\Desktop\launch_ozOptics.lnk"
+set "shortcutozPath=%repoPath%\launch_combs.lnk"
+set "desktopPath=%USERPROFILE%\Desktop\launch_combs.lnk"
 
-set "targetPath=%setupPath_%_batch"
+set "targetPath=%setupPath_%_batchLaunchers"
 
 :: Use PowerShell to update the shortcut
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.TargetPath = '%targetPath%\__launchSetup.bat'; $shortcut.IconLocation = '!setupIcon!'; $shortcut.WorkingDirectory = '%setupPath_%'; $shortcut.Save()"
