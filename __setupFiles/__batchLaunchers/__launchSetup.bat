@@ -105,11 +105,9 @@ echo --------------------------------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
             %= asking for fastmode  =%
-:: user interaction with setup
 
 :: no fast setup go to usual setup
-echo %ask%
-if %ask% == 0 ( goto :askDebug ) else if %ask% == 1 ( echo lets do it )
+if %ask% == 0 ( echo +ULTRA -^> %ask% & goto :askDebug )
 
 
 :askFast
