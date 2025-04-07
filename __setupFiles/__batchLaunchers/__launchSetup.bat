@@ -3,6 +3,9 @@
 :: -> python is installed at PATH_PYTHON
 :: -> && a requirements.txt is provided at PATH_
 
+:: ensure setup submodule is up to date with most recent commit
+call .updateSubmod.bat
+
 :: ________________________________________________________________________________________________________________________________________
 
 :: Ensure script runs as administrator
@@ -20,6 +23,7 @@ set "pyVersion=3.9.13"
 
 :: so pc wont remember variables to enviroment
 setlocal enabledelayedexpansion
+
 :: ________________________________________________________________________________________________________________________________________
 
 
@@ -688,7 +692,7 @@ if /i !answer! == n ( echo __ozOsetup done^! & call :close )
 :: ensure venv deactivated and variable locality ends
 
 :close
-    echo deactivating vevn ...& pause
+    echo deactivating vevn ...
 
     echo --------------^> closing^!
     rem inform user of closing and close after number of sec delay
