@@ -11,11 +11,16 @@ setlocal enabledelayedexpansion
 
 :: move to top level parent dir 
 
-cd ..\..\.. & echo -- PARENT REPO --
-
+cd ..\..\.. 
+echo ------------------------- GitHub Submodule Update -------------------------------------
+echo NIST: 675.02                                                   Last mod: April 7 2025
+echo Written by: Allie Christensen
+echo ---------------------------------------------------------------------------------------
+echo.
+echo -n | set /p="Submodule updated?       "
 git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & goto :confirm) 
 
-echo -n | set /p=Submodule updated --^> ✓
+echo ✓
 
 goto :close
 
