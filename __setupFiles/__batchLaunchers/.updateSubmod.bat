@@ -33,13 +33,13 @@ echo Overwrite local?
 echo -n | set /p answer=" Answer (y/n): "
 
 :: when changing path option enabled
-if /i !answer! == y ( echo okeeeee & pause & git submodule update --remote  --force )
+if /i !answer! == y ( echo okeeeee & git submodule update --remote  --force || ( echo ERROR %errorlevel%: TRY again. & goto :close)  )
 
 if /i !answer! neq y (
     echo -n |set /p=ummm....nah
     rem grab other errors
     if /i !answer! neq n ( echo. & echo ERROR: Please input "y" or "n" & echo Please try again^. & goto :confirm )
-    if /i !answer! == n ( echo -n | set /p="... exiting!" & pause && exit ) )
+    if /i !answer! == n ( echo -n | set /p="... exiting!" & pause && goto :close ) )
 
 
 
@@ -50,6 +50,6 @@ if /i !answer! neq y (
 echo --------------^> closing^!
 rem inform user of closing and close after number of sec delay
 echo -n | ping -n 10 127.0.0.1 >nul
-deactivate
+
 endlocal
 exit
