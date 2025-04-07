@@ -6,7 +6,7 @@
 net session >nul 2>&1
 if %errorlevel% neq 0 (
     echo Elevating privileges...
-    powershell -Command "Start-Process cmd.exe -Verb RunAs -WorkingDirectory %~dp0 " ) 
+    powershell -Command "Start-Process cmd.exe -Verb RunAs -WorkingDirectory %~dp0 " && exit /b ) 
 :: ________________________________________________________________________________________________________________________________________
 
 @echo off
