@@ -19,7 +19,7 @@ setlocal enabledelayedexpansion
 
 cd ..\..\.. & echo -- PARENT REPO --
 
-git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & pause & goto :confirm) 
+git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo with submodule but repo has local changes that will be overwritten^. & goto :confirm) 
 
 echo Updated submodule^!
 
@@ -32,19 +32,20 @@ goto :close
 
 
 :: as user which python dir
-echo Overwrite local?  & echo -n | set /p over="y or n: "
+echo Overwrite local? & set /p over="y or n: "
 
 
 :: when changing path option enabled
 if /i !over! == y ( 
-    git submodule update --remote  --force || ( echo ERROR %errorlevel%: TRY again. & goto :close) 
+    git submodule update --remote  --force || ( echo -n | set /p=ERROR %errorlevel%: & IF %errorlevel% == 128 ( echo NOT IN PARENT REPO^! ) else ( echo Try again. ) & goto :close )
 )
 
 if /i !over! neq y (
-    echo -n |set /p=ummm....nah
+    echo ummm....nah
     rem grab other errors
-    if /i !over! neq n ( echo. & echo ERROR: Please input "y" or "n" & echo Please try again^. & pause & goto :confirm )
-    if /i !over! == n ( echo -n | set /p="... exiting!" & pause && goto :close ) )
+    if /i !over! neq n ( echo. & echo ERROR: Please input "y" or "n" & echo Please try again^. & goto :confirm )
+    if /i !over! == n ( echo -n | set /p="... exiting!" && goto :close ) 
+)
 
 
 
@@ -54,7 +55,7 @@ if /i !over! neq y (
 
 echo --------------^> closing^!
 rem inform user of closing and close after number of sec delay
-echo -n | ping -n 10 127.0.0.1 >nul
+echo -n | ping -n 3 127.0.0.1 >nul
 
 endlocal
-exit
+exit /b 
