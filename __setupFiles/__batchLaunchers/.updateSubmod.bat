@@ -49,7 +49,7 @@ if /i !answer! neq y (
 
 echo --------------^> closing^!
 rem inform user of closing and close after number of sec delay
-echo -n | ping -n %closetime% 127.0.0.1 >nul
+echo -n | ping -n 10 127.0.0.1 >nul
 deactivate
 endlocal
 exit
