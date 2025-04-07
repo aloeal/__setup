@@ -17,9 +17,9 @@ echo NIST: 675^.02                                                   Last mod: A
 echo Written by: Allie Christensen
 echo ---------------------------------------------------------------------------------------
 echo.
-echo -n | set /p="Submodule updated?       "
+echo Submodule updated?
 git submodule update --remote >nul 2>&1 || ( echo. & echo ERROR %errorlevel% & goto :confirm ) 
-
+echo. 
 echo Yas^^!!!!
 
 goto :close
