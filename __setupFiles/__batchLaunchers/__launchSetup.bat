@@ -604,7 +604,7 @@ set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
 set "shortcutozPath=%repoPath%\launch_ozOptics.lnk"
 set "desktopPath=%USERPROFILE%\Desktop\launch_ozOptics.lnk"
 
-set "targetPath=%setupPath_%_batch"
+set "targetPath=%setupPath_%_batchLaunchers"
 
 :: Use PowerShell to update the shortcut
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.TargetPath = '%targetPath%\__launchSetup.bat'; $shortcut.IconLocation = '!setupIcon!'; $shortcut.WorkingDirectory = '%setupPath_%'; $shortcut.Save()"
