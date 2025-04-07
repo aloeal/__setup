@@ -18,7 +18,8 @@ echo Written by: Allie Christensen
 echo ---------------------------------------------------------------------------------------
 echo.
 echo Submodule updated?
-git submodule update --remote >nul 2>&1 || ( echo. & echo ERROR %errorlevel% & goto :confirm ) 
+git submodule update --remote >nul 2>&1 || ( echo. & echo ERROR %errorlevel% & goto :confirm )  
+rem eror == 0 not in parent
 echo. 
 echo Yas^^!!!!
 
