@@ -22,7 +22,9 @@ cd ..\..\.. & echo -- PARENT REPO --
 git submodule update --remote  || ( echo ERROR %errorlevel%: ...tried to update repo w/ submodule but repo has local changes that will be overwritten. & goto :confirm) 
 
 echo Updated submodule^!
-pause && exit 
+
+goto :close
+
 
 :confirm
 
@@ -42,3 +44,12 @@ if /i !answer! neq y (
 
 
 :: _____________
+
+:close
+
+echo --------------^> closing^!
+rem inform user of closing and close after number of sec delay
+echo -n | ping -n %closetime% 127.0.0.1 >nul
+deactivate
+endlocal
+exit
