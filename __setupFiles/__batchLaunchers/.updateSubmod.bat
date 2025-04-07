@@ -1,12 +1,12 @@
-@echo off
-:: Batch file to update submodules in repot with most RECENT commit in submod repo
-:: ________________________________________________________________________________________________________________________________________
+rem @echo off
+rem :: Batch file to update submodules in repot with most RECENT commit in submod repo
+rem :: ________________________________________________________________________________________________________________________________________
 
-:: Ensure script runs as administrator
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Elevating privileges...
-    powershell -Command "Start-Process cmd.exe -Verb RunAs -WorkingDirectory %~dp0 " && exit /b ) 
+rem :: Ensure script runs as administrator
+rem net session >nul 2>&1
+rem if %errorlevel% neq 0 (
+rem     echo Elevating privileges...
+rem     powershell -Command "Start-Process cmd.exe -Verb RunAs -WorkingDirectory %~dp0 " && exit /b ) 
 :: ________________________________________________________________________________________________________________________________________
 
 @echo off
