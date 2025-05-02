@@ -14,17 +14,62 @@ if %errorlevel% neq 0 (
 :: ________________________________________________________________________________________________________________________________________
 
 @echo off
-:: install desired
-set "pyType=Python"
-set "pyVersion=3.9.13"
 
 :: so pc wont remember variables to enviroment
 setlocal enabledelayedexpansion
+
+:: path to dirs (do not change)
+set "repo=FSOTerminal\__setup"
+set "venvName=__fsoVenv"
+
+:: default for fso python install & setup repo structure
+set "setupFiles=__setupFiles\"
+
+
+:: ________________________________________________________________________________________________________________________________________
+
+
+:: install desired
+set "pyType=Python"
+set "pyVersion=3.9.4"
+
+:: ________________________________________________________________________________________________________________________________________
+
+:: DO NOT CHANGE below
+set +ultra=True
+:: bool if user wants option to skip many qs and go for defaults
+set ask=1
+
+rem if python already installed on pc
+set skipPython=0
+
+
+rem bools if user wants debug terminal startup or change installs
+set skipVenv=0
+rem user wants to install git bash and executables in exe.tar
+set skipExe=1
+set skipGit=0
+set skipBonus=1
+
+rem bonus exe installable via winget
+set "bonus1=7zip.7zip"
+set "bonus2=voidtools.Everything"
+set "bonus3=Microsoft.VCRedist.2013.x86"
+
+:: CHANGE ME if you add or subtract bonus installs...should match number of installs
+set bonus=3
+
+
+:: do not change below
+set closetime=10
+set dots=0
+set debug=0
+
 :: ________________________________________________________________________________________________________________________________________
 
 
 echo ________________________________ venv auto setup ______________________________________
-echo NIST: 675.02                                                   Last mod: March 27 2025
+echo                                                                      Last mod: May 1 2025
 echo Written by: Allie Christensen
 echo _______________________________________________________________________________________
 echo            Refer to README to see information regarding this script
@@ -37,77 +82,92 @@ rem                              dialog (cmd /k when needed)
 echo _______________________________________________________________________________________
 
 :: ________________________________________________________________________________________________________________________________________
-                    %= USER may have to change below! =%
 
-set allie=0
+if %+ultra% ==False ( echo no +ultraSPEED & goto :decompressExe ) else ( echo +ultraSPEED^!)
 
-:: expedite path setting for allie on sslap
-if !allie! == 1 ( set "PATH_=C:\Users\anc32\GitItUp\" & set "PATH_PYTHON=C:\Program Files\Python39\python.exe" & goto :done )
-
-:: path to repo
-:: nuc1
-rem set "PATH_=C:\OTTRepos\FSOTerminal\__setup"
-:: alt path to repo, baldur?
-set "PATH_=C:\Users\fcomb\OTTRepos\FSOTerminal\__setup"
-
-:: path to installed python on pc
-:: nuc1
-set "PATH_PYTHON=C:\WPy64-3940\python-3.9.4.amd64\"
-:: alt path to python baldur?
-rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\"
-
-set "venvName=__fsoVenv"
-
-:done
-echo. & if %allie% ==1 ( echo -^> Allie params set^! & echo. )
-
-:: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_FSO_startup_altfileloc.bat instead
-
-:: ________________________________________________________________________________________________________________________________________
-:: bool if user wants option to skip many qs and go for defaults
-set ask=1
-
-rem if python already installed on pc
-set skipPython=1
-rem bools if user wants debug terminal startup or change installs
-set skipVenv=0
-rem user wants to install git bash and executables in exe.tar
-set skipExe=1
-set skipGit=1
-set skipBonus=1
-
-rem bonus exe installable via winget
-set "bonus1=7zip.7zip"
-set "bonus2=voidtools.Everything"
-set "bonus3=Microsoft.VCRedist.2013.x86"
-
-:: CHANGE ME if you add or subtract bonus installs...should match number of installs
-set bonus=3
+echo Searching for "...\%repo%" ....
 
 :: ________________________________________________________________________________________________________________________________________
 
-:: do not change below
-set closetime=10
-set dots=0
-set debug=0
+:: potential repository paths
+set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "%USERPROFILE%\OTTRepos" "C:\Users\anc32\GitItUp" "%USERPROFILE%\GitHub"
 
+set repoNames="FSOTerminal" "FSOTerminal-local" "FSOTerminal-main"
+set flagA=False
 
-:: default for fso python install & setup repo structure
-set "setupFiles=__setupFiles\"
+echo        Checking: 
+:: Loop through each path in repoPATHs
+for %%P in (%repoPATHs%) do (
+    set "currentPath=%%~P\"
+
+    for %%Q in (%repoNames%) do (
+        set "currentRepo=%%~Q"
+
+        echo -n |set /p=... !currentPath!!currentRepo!
+
+        if exist "!currentPath!%currentRepo%" (
+
+            set flagA=True
+            set "PATH_=!currentPath!!currentRepo!"
+
+            goto :repoFound 
+
+        ) else (
+            echo ...x
+        )
+    )
+)
+
+if %flagA% == False ( echo ERRORA: Repo not found. & pause & exit /b )
+
+:repoFound
+echo. & echo -^> REPO found : !PATH_! & echo.
 
 
 :: ________________________________________________________________________________________________________________________________________
 
-echo Working DIR: -default       ^> %PATH_%
-echo python DIR:  -default       ^> !PATH_PYTHON!
-echo --------------------------------------------------------------------
+
+set flagB=False
+
+:: potential python paths
+set pyPATHs="C:\Program Files\Python39" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64" "C:\Python_394"
+echo Searching for %pyType% %pyType% "...\python.exe" ...
+
+echo        PYTHON: 
+
+:: Loop through each path in repoPATHs
+for %%P in (%pyPATHs%) do (
+    set "currentPath=%%~P\"
+
+    echo -n |set /p="... !currentPath!python.exe"
+
+    if exist "!currentPath!python.exe" (
+        set flagB=True
+
+        set "PATH_PYTHON=!currentPath!python.exe"
+
+        goto :pythonFound
+
+    ) else (
+         echo ...x
+    )
+)
+
+if %flagB% == False ( echo ERRORB: Python not found. & goto :decompressExe )
+
+:pythonFound
+echo. & echo -^> PYTHON found : !PATH_PYTHON!
+set ask=0 & set skipPython=1 
+goto :decompressExe
+
+
 
 :: ________________________________________________________________________________________________________________________________________
             %= asking for fastmode  =%
 :: user interaction with setup
 
 :: no fast setup go to usual setup
-if %ask% == 0 ( goto :askDebug )
+if %ask% == 1 ( goto :askDebug )
 
 
 :askFast
@@ -302,10 +362,6 @@ if /i !answer! neq y (
     echo -n | set /p="...  echo skipping seeing the exes...YAS^!" & set skipBonus=1 & goto :installBonus )
 
 
-
-
-
-
 :: ________________________________________________________________________________________________________________________________________
 :: _______________________________________________________
 :: _______________________________________________________
@@ -321,10 +377,12 @@ cd C:\
 
 set "setupPath_=%PATH_%\%setupFiles%"
 
+
 if %skipExe% == 1 ( goto :installBonus )
 
+
 :: find setup dir with executable files
-if not exist %setupPath_%__exes (
+if not exist %setupPath_%__exes\exes.tar (
     echo jammi & pause
 
     if %debug% == 1 ( echo debugger mess -^> where the EXEs be at?^! & cmd /k )
@@ -332,7 +390,7 @@ if not exist %setupPath_%__exes (
     mkdir %setupPath_%__exes
     rem grab errors
     if !errorlevel! neq 0 ( echo ERROR !errorlevel!: mkdir exe )
-    if !errorlevel! == 0 ( echo exe dir created^. ) )
+    if !errorlevel! == 0 ( echo exe dir created^. ) ) else ( echo no exe.tar to unpack and install...moving on & goto :installBonus )
 
 
 :: when the exe file exsits or error?
@@ -383,7 +441,9 @@ if %skipBonus% == 1 (
     rem just install 7 zip if user want to install winpy or py
     if %skipPython% ==1 ( echo SKIPPING around...  & goto :chkVenv )
      rem just install 7 zip if user want to install winpy or py
-    if %skipPython% ==0 ( winget install %bonus1% & echo no bonus this year & goto :decompress )
+    if %skipPython% ==0 ( 
+        winget install %bonus1% >nul || (echo ... no bonus this year^!)
+        goto :decompress )
     )
 
 if %bonus% GTR 1 ( echo + Bonuses... ) else if %bonus% == 1 ( echo + Bonus... )
@@ -401,18 +461,28 @@ for /l %%i in ( 1, 1, %bonus% ) do (
 :: _______________________________________________________
 
 :decompress
+
+:: ________________________________________________________________________________________________________________________________________
+
+echo Working DIR: -default       ^> %PATH_%
+echo --------------------------------------------------------------------
+
+
 :: as user which python dir
 echo --------------------------------------------
 echo Installation: %pyType% %pyVersion%
 echo --------------------------------------------
+pause 
 
-set cleanVersion=!pyType!_%pyVersion:.=%
-set cleanInstall=C:\!cleanVersion!
+set "cleanVersion=!pyType!_%pyVersion:.=%"
+set "cleanInstall=C:\!cleanVersion!"
+
+echo cleaninstall? %cleanInstall%
 
 if not exist "%cleanInstall%" (
     echo panda
     if %debug% == 1 ( echo DNE -^> where the !pyType! be at?^! )
-    mkdir %cleanInstall%
+    mkdir %cleanInstall% & pause 
     rem grab errors
     if !errorlevel! == 0 ( echo %cleanInstall% dir created^. )
     if !errorlevel! neq 0 ( echo ERROR pyinstalldecom !errorlevel!: mkdir %cleanInstall% )
@@ -424,15 +494,22 @@ if not exist "%cleanInstall%" (
 
 if %debug% ==1 ( echo attempting python install... )
 
-:: determine if version is one or two char for install
-
+:: determine if version has one or two char for install in second decimal place 
 if "%pyVersion:~3,1%" == "." ( set "idVer=%pyVersion:~0,3%" ) else if "%pyVersion:~4,1%" == "." ( set "idVer=%pyVersion:~0,4%" ) else ( echo error det ver & cmd /k )
 echo verrbbbb %idVer%
-winget install "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" --location "%cleanInstall%" --no-upgrade --wait --silent
+
+
+:: install python 
+winget install "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" --location "%cleanInstall%" --scope user --no-upgrade --wait --silent  || ( 
+    echo ERROR try again & pause & cmd /k 
+    winget install "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" --location "%cleanInstall%" --exact --no-upgrade --wait --silent )
+
+::catch errors
 if %errorlevel% GTR 1 ( echo ERROR %errorlevel% bonusI: attempt to install %bonusI% & call :close
 ) else if %errorlevel% LSS 0 (
     echo -n | set /p="%pyType% is installed already^!..."
-    winget list --id "%pyType%.%pyType%"
+    winget list --id "%pyType%.%pyType%" & pause 
+
     rem winget uninstall Python.Python.3.9 --version 3.9.4
     if %ask% == 0 ( echo %pyType% overwrite...impending^! & winget uninstall "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" && goto :installPython || ( echo beans fix me & cmd /k ) )
     echo past ask
