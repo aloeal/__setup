@@ -86,7 +86,7 @@ echo ___________________________________________________________________________
 
 if %+ultra% ==False ( echo              no +ultraSPEED & goto :decompressExe ) else ( echo                       +ultraSPEED^^! )
 
-echo Searching for "...\%repo%" ....
+echo Searching for "...\%repo%*" ....
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -100,7 +100,7 @@ set flagA=False
 for %%P in (%repoPATHs%) do (
     set "currentPath=%%~P\"
 
-    for %%Q in (%repoNames%\__setup) do (
+    for %%Q in (!repoNames!\__setup) do (
         set "currentRepo=%%~Q"
 
 
@@ -120,7 +120,7 @@ for %%P in (%repoPATHs%) do (
 if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b )
 
 :repoFound
-echo. & echo -^> REPO found : !PATH_! & echo.
+echo. & echo    -^> REPO found : !PATH_! & echo.
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -155,7 +155,7 @@ for %%P in (%pyPATHs%) do (
 if %flagB% == False ( echo Python not found. Install required -^> & goto :decompressExe )
 
 :pythonFound
-echo. & echo -^> PYTHON found : !PATH_PYTHON!
+echo. & echo    -^> PYTHON found : !PATH_PYTHON!
 set ask=0 & set skipPython=1 
 goto :decompressExe
 
@@ -439,7 +439,7 @@ call :removeExe
 :: user wants to skip exe files so...
 if %skipBonus% == 1 (
     rem just install 7 zip if user want to install winpy or py
-    if %skipPython% ==1 ( echo SKIPPING around...  & goto :chkVenv )
+    if %skipPython% ==1 ( echo SKIPPING around bc pythons on board...  & goto :chkVenv )
      rem just install 7 zip if user want to install winpy or py
     if %skipPython% ==0 (         
         winget install 7zip.7zip >nul || ( echo ... no 7zip of unzipping^^! ) & rem 7zip installed already 
@@ -487,15 +487,9 @@ if "%pyVersion:~3,1%" == "." ( set "idVer=%pyVersion:~0,3%" ) else if "%pyVersio
 
 
 
-:: install local python 
-"C:\Program Files\7-Zip\7z.exe" x "%setupPath_%__exes\Winpython64-3.9.4.0cod.exe" -o%cleanInstall% -y -aoa
-:: as user which python dir
-echo --------------------------------------------
-echo Installation: %pyType% %pyVersion% 
-echo         Containing DIR: ^> %cleanInstall%
-echo -------------------------------------------- 
-
-"Winpython64-3.9.4.0cod.exe" /quiet InstallAllUsers=0 Include_launcher=0 Include_test=1 PrependPath=0 TargetDir=%cleanVersion% || ( 
+:: unzip and install winpython 
+"C:\Program Files\7-Zip\7z.exe" x "%setupPath_%__exes\Winpython64-3.9.4.0cod.exe" -o%cleanInstall% -y -aoa || ( 
+    rem catch errors
     echo some sort of fail
     if !errorlevel! LSS 0 (
         echo --------------------------------------------
@@ -517,43 +511,24 @@ echo --------------------------------------------
 echo no error? 
 "PATH_PYTHON=%cleanInstall%"
 
-cd C:\
-rem winget install "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" ^
-rem   --override "/quiet PrependPath=0 Include_launcher=0 TargetDir=%cleanInstall%" ^
-rem   --location "%cleanVersion%" --silent --exact --force --accept-package-agreements --accept-source-agreements || ( 
 
-rem ::catch errors
-rem if %errorlevel% GTR 1 ( echo ERROR %errorlevel% bonusI: attempt to install %bonusI% & call :close
-rem ) else if %errorlevel% LSS 0 (
-rem     echo -n | set /p="%pyType% is installed already^!..."
-
-rem     rem winget uninstall Python.Python.3.9 --version 3.9.4
-rem     if %ask% == 0 ( echo %pyType% overwrite...impending^! & winget uninstall "%pyType%.%pyType%.%idVer%" --version "%pyVersion%" && goto :installPython || ( echo beans fix me & cmd /k ) )
-rem     echo past ask
-
-rem     if %debug% == 1 (
-rem         echo -^> Please confirm you want to OVERWRITE installation by manual uninstall...use line below ^& id in table output to terminal^.
-rem         echo        ^> winget uninstall ^<name.name.deployment^> --version ^<version^> ^&   & rem -1978335212
-rem         echo           ex.... Python^.Python^.3^.9 --version 3^.9^.4
-rem         echo USER: uninstall %pyType% & cmd /k
-rem     ) else ( echo Uninstalling %pyType% %idVer%... & winget uninstall "%pyType%.%pyType%.%idVer%" --version "%pyVersion" )
-rem     echo done uninstallin yoooo & goto :installPython
-rem    ) else if %errorlevel% == 0 ( echo      DONE    ^| yas  & set "PATH_PYTHON=%cleanInstall%" )
-
-:: delete dir with .exe file post install
+echo --------------------------------------------
+echo Installation: %pyType% %pyVersion% 
+echo         Containing DIR: ^> %cleanInstall%
 echo -------------------------------------------- 
+
 
 
 :: ________________________________________________________________________________________________________________________________________
 
 :chkVenv
 
-set "venvPath_=%PATH_%\%venvName%"
+set "venvPath_=%PATH_%%venvName%"
 
 
 if %skipVenv% == 1 ( echo Skipping venv -- & goto :lastjubba )
 
-echo -n | set /p =Check env... 
+rem echo -n | set /p =Checking for venv... 
  
 
 :: Ensure virtual environment exists if not create it with local python installed
@@ -566,7 +541,7 @@ if exist %venvPath_% (
     echo boom ) 
 
 :: create venv fresh each time 
-if not exist %venvPath_% ( echo NO virutal environment present at: !venvPath_!^! & echo NOTE: Double check path location ideally repo folder/dir ^& close if incorrect^. & goto :createVenv )
+if not exist %venvPath_% ( echo NO virutal environment present at: !venvPath_!^^! Creating... & goto :createVenv )
 
 echo.
 echo --------------------------------------------
@@ -579,12 +554,13 @@ echo --------------------------------------------
 if %debug% == 1 ( echo trying to activate new venv... )
 
 :: Activate the virtual environment
-call %venvPath_%\Scripts\activate.bat
-
-if %errorlevel% neq 0 (
+call %venvPath_%\Scripts\activate.bat || ( 
+    echo oh no 
+    if %errorlevel% neq 0 (
     echo Attempted to call activation of env...ERRORa
     if %debug% == 0 ( echo NOT in DEBUG MODE... & echo -n | ping -n 10 127.0.0.1 >nul && echo closing! & call :close )
     if %debug% == 1 ( echo Enabling cmd... && echo Ready! & cmd /k ) )
+)
 echo VENV ACTIVATED ----
 
 :: ________________________________________________________________________________________________________________________________________
@@ -679,12 +655,17 @@ for %%A in ("%PATH_%") do (
     set "repoPath=!repoPath!sysCode\"
     echo REPO at: !repoPath!
     )
+echo check these -----
+echo %repoPath%camera_control\pyebus\ 
+echo %venvPath_%\Lib\site-packages\pyebus
 
-xcopy "%repoPath%camera_control\pyebus\" "%venvPath_%\Lib\site-packages\pyebus" /E /I /Y >nul 2>&1
-if %errorlevel% == 0  ( echo      ^| done 
-) else if %errorlevel% == 4  ( echo ERROR xcopy %errorlevel%: BAD cmd syntax & call :close 
-) else if %errorlevel% ==1 ( echo ERROR xcopyNO: NO Files found in pyebus & call :close 
-) else ( echo ERROR xcopy FINAL%errorlevel%: starting cmd line & cmd /k ) 
+xcopy "%repoPath%camera_control\pyebus\" "%venvPath_%\Lib\site-packages\pyebus" /E /I /Y >nul 2>&1 || (
+    echo error ebbus copy 
+    if %errorlevel% == 0  ( echo      ^| done 
+    ) else if %errorlevel% == 4  ( echo ERROR xcopy %errorlevel%: BAD cmd syntax & call :close 
+    ) else if %errorlevel% ==1 ( echo ERROR xcopyNO: NO Files found in pyebus & call :close 
+    ) else ( echo ERROR xcopy FINAL%errorlevel%: starting cmd line & cmd /k )
+    ) 
 :: ________________________________________________________________________________________________________________________________________
             %= KEEP THE INSTALLATION TERMINAL OPEN till user closes =%
 :lastjubba
@@ -701,21 +682,21 @@ set "mainIcon=%iconPath%__main.ico"
 
 
 set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
-set "shortcutFSOPath=%repoPath%\LaunchSystem.lnk"
-set "desktopPath=%USERPROFILE%\Desktop\freeSpaceOptics.lnk"
+set "shortcutFSOPath=%repoPath%\Launch_fsoWasp.lnk"
+set "desktopPath=%USERPROFILE%\Desktop\Launch_fsoWasp.lnk"
 
 
 
 :: Use PowerShell to update the shortcut
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.IconLocation = '!setupIcon!'; $shortcut.Save()"
-if %errorlevel% neq 0 ( echo ERROR Setup icon: %errorlevel% & echo Please try again^. & pause && call :close )
+rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.IconLocation = '!setupIcon!'; $shortcut.Save()"
+rem if %errorlevel% neq 0 ( echo ERROR Setup icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutFSOPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try again^. & pause && call :close )
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
-echo Shortcut icons updated successfully^! 
+echo Shortcuts created^! 
 echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
@@ -747,7 +728,7 @@ if /i !answer! == n ( echo __setup done^! & call :close )
     "%PYTHON_EXE%" -m venv %venvPath_%\ 2>&1 || ( echo ERRORa !errorlevel!: Attempted to make env. && if %debug% == 1 ( echo Enabling cmd... && echo Ready! & cmd /k ) else ( echo oopsie & call :close ) )
     rem if %debug% == 0 ( echo NOT in DEBUG MODE... & echo -n | ping -n 10 127.0.0.1 >nul && echo moving on! )
     rem echo -n | set /p="Fresh venv created! "
-    echo ----- & goto :actVenv
+    goto :actVenv
 
 :removePy
     rmdir /s /q %setupPath_%\__files\ 2>&1 || echo ERROR !errorlevel!: tried to rm old python dir  & exit /b
@@ -791,7 +772,7 @@ if /i !answer! == n ( echo __setup done^! & call :close )
 
 :close
     deactivate & echo vevn deactivated^.
-    endlocal & echo --------------^> closing^!
+    endlocal & echo --------------^> closing in %closetime% sec^!
     rem inform user of closing and close after number of sec delay
     echo -n | ping -n %closetime% 127.0.0.1 >nul 
     exit
