@@ -636,7 +636,7 @@ cd "%PATH_%"
 rem echo moving
 rem cd
 
-echo "+ pyebus ... "
+echo + pyebus ... 
 
 for %%A in ("%PATH_%") do (
     set "repoPath=%%~dpA"
@@ -653,7 +653,7 @@ xcopy "%repoPath%camera_control\pyebus\" "%venvPath_%\Lib\site-packages\pyebus" 
     ) else if %errorlevel% == 4  ( echo ERROR xcopy %errorlevel%: BAD cmd syntax & call :close 
     ) else if %errorlevel% ==1 ( echo ERROR xcopyNO: NO Files found in pyebus & call :close 
     ) else ( echo ERROR xcopy FINAL%errorlevel%: starting cmd line & cmd /k ) )
-
+echo      ^| done 
 
 :: ________________________________________________________________________________________________________________________________________
             %= KEEP THE INSTALLATION TERMINAL OPEN till user closes =%
@@ -665,57 +665,52 @@ rem echo -n |set/p="last jubba: "
 git lfs install || ( echo already installed? ) 
 git lfs pull || ( echo unable to pull )
 
+echo --------------------------------------------
+
 :setIcon
 :: Get the current directory of the script
 
-set "iconPath=%setupPath_%__icons\"
+:: path to batch file needed to run in shortcut to launch ui
+set "batPath=%setupPath_%_batchLaunchers\_LauncherMain.bat"
 
-set "setupIcon=%iconPath%__setup.ico"
+:: where we want the batch file to be run from 
+set "workingDir=%PATH_%camera_control\cameraprocess\"
+
+
+set "iconPath=%setupPath_%__icons\"
 set "mainIcon=%iconPath%__main.ico"
 
 
-set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
 set "shortcutFSOPath=%PATH_%\Launch_fsoWasp.lnk"
-set "shortcutDesktopPath=%USERPROFILE%\Desktop\Launch_fsoWasp.lnk"
-set "exePath=%PATH_%__fsoVenv\Scripts"
-set "workingDir=%PATH_%camera_control\cameraprocess\"
+
+
+::determine desktop location 
+for /f "usebackq delims=" %%D in (`
+  powershell -NoProfile -Command "[Environment]::GetFolderPath('Desktop')"
+`) do set "desktopPath=%%D"
+
+echo Desktop shortcut at: %desktopPath%
+
+
+set "shortcutDesktopPath=%desktopPath%\Launch_fsoWasp.lnk"
+
 
 :: Use PowerShell to update the shortcut
-rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.IconLocation = '!setupIcon!'; $shortcut.Save()"
-rem if %errorlevel% neq 0 ( echo ERROR Setup icon: %errorlevel% & echo Please try again^. & pause && call :close )
-powershell -Command ^
-  "$WshShell = New-Object -ComObject WScript.Shell; ^
-   $sc = $WshShell.CreateShortcut('%shortcutFSOPath%'); ^
-   $sc.TargetPath       = '%exePath%'; ^
-   $sc.WorkingDirectory = '%workingDir%'; ^
-   $sc.IconLocation     = '%mainIcon%'; ^
-   $sc.Save()"
-if %errorlevel% neq 0 (
-  echo ERROR creating FSO shortcut & pause && call :close
+powershell -NoProfile -Command "$s=New-Object -ComObject WScript.Shell; $sc=$s.CreateShortcut('%shortcutFSOPath%'); $sc.TargetPath='%batPath%'; $sc.WorkingDirectory='%workingDir%'; $sc.IconLocation='%mainIcon%'; $sc.Save()" || (
+    if %errorlevel% neq 0 ( echo ERROR creating FSO shortcut & pause && call :close ) )
+echo repo shortcut ^| done 
+
+powershell -NoProfile -Command "$s=New-Object -ComObject WScript.Shell; $sc=$s.CreateShortcut('%shortcutDesktopPath%'); $sc.TargetPath='%batPath%'; $sc.WorkingDirectory='%workingDir%'; $sc.IconLocation='%mainIcon%'; $sc.Save()" || ( 
+    echo nah  
+    if %errorlevel% neq 0 ( echo ERROR creating desktop shortcut & pause && call :close ) 
 )
-powershell -Command ^
-  "$WshShell = New-Object -ComObject WScript.Shell; ^
-   $sc = $WshShell.CreateShortcut('%shortcutDesktopPath%'); ^
-   $sc.TargetPath       = '%exePath%'; ^
-   $sc.WorkingDirectory = '%workingDir%'; ^
-   $sc.IconLocation     = '%mainIcon%'; ^
-   $sc.Save()"
-if %errorlevel% neq 0 (
-  echo ERROR creating desktop shortcut & pause && call :close
-)
+echo desktop shortcut ^| done 
 
-
-rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutFSOPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
-rem if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try again^. & pause && call :close )
-rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
-rem if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
-
-echo Shortcuts created^^!
 echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
 
-if %ask% ==0 ( echo         Setup DONE & pause & goto :close ) else ( echo last Q! ) 
+if %ask% ==0 ( echo         Setup DONE & goto :close ) else ( echo last Q! ) 
 rem ask user which python to use
 echo Setup done^! Do you to input any cmds? & set /p answer="Answer (y/n):"
 
