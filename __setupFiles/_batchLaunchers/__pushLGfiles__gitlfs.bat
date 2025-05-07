@@ -66,6 +66,14 @@ echo Staging files...
 git add . >nul 2>&1
 echo [OK] Files staged.
 
+:: display changes to be made in commit
+rem git diff --cached
+git commit --dry-run --verbose
+git lfs push --dry-run origin %BRANCH%
+
+rem git push --dry-run
+echo dry run git push ------  
+
 :: Commit changes
 echo Commit ^& push changes...? & set /p answer="Answer (y/n):"
 
@@ -87,7 +95,7 @@ if %errorlevel% neq 0 (
 
 :: Push to remote repository
 echo Pushing to remote branch: %BRANCH%...
-git push origin %BRANCH% >nul 2>&1
+git lfs push --all origin %BRANCH% >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Push failed. Check your Git settings.
     pause
@@ -102,4 +110,5 @@ echo ================================
 echo.
 
 pause
-exit /b 0
+endlocal
+exit 
