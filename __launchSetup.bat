@@ -676,18 +676,39 @@ set "mainIcon=%iconPath%__main.ico"
 
 set "shortcutSetupPath=%PATH_%\__launchSetup.lnk"
 set "shortcutFSOPath=%PATH_%\Launch_fsoWasp.lnk"
-set "desktopPath=%USERPROFILE%\Desktop\Launch_fsoWasp.lnk"
-
-
+set "shortcutDesktopPath=%USERPROFILE%\Desktop\Launch_fsoWasp.lnk"
+set "exePath=%PATH_%__fsoVenv\Scripts"
+set "workingDir=%PATH_%camera_control\cameraprocess\"
 
 :: Use PowerShell to update the shortcut
 rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutSetupPath!'); $shortcut.IconLocation = '!setupIcon!'; $shortcut.Save()"
 rem if %errorlevel% neq 0 ( echo ERROR Setup icon: %errorlevel% & echo Please try again^. & pause && call :close )
+powershell -Command ^
+  "$WshShell = New-Object -ComObject WScript.Shell; ^
+   $sc = $WshShell.CreateShortcut('%shortcutFSOPath%'); ^
+   $sc.TargetPath       = '%exePath%'; ^
+   $sc.WorkingDirectory = '%workingDir%'; ^
+   $sc.IconLocation     = '%mainIcon%'; ^
+   $sc.Save()"
+if %errorlevel% neq 0 (
+  echo ERROR creating FSO shortcut & pause && call :close
+)
+powershell -Command ^
+  "$WshShell = New-Object -ComObject WScript.Shell; ^
+   $sc = $WshShell.CreateShortcut('%shortcutDesktopPath%'); ^
+   $sc.TargetPath       = '%exePath%'; ^
+   $sc.WorkingDirectory = '%workingDir%'; ^
+   $sc.IconLocation     = '%mainIcon%'; ^
+   $sc.Save()"
+if %errorlevel% neq 0 (
+  echo ERROR creating desktop shortcut & pause && call :close
+)
 
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutFSOPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
-if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try again^. & pause && call :close )
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
-if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
+
+rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!shortcutFSOPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
+rem if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try again^. & pause && call :close )
+rem powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
+rem if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
 echo Shortcuts created^^!
 echo --------------------------------------------
