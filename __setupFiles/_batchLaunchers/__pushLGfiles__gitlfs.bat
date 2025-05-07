@@ -14,7 +14,7 @@ if %errorlevel% neq 0 (
 setlocal enabledelayedexpansion
 
 :: Define the branch name
-set "BRANCH=development_2024"
+set "BRANCH=freeSpaceOptics" ||  ( set "BRANCH=TEST_blue" ) 
 
 echo.
 echo ================================
@@ -67,7 +67,17 @@ git add . >nul 2>&1
 echo [OK] Files staged.
 
 :: Commit changes
-echo Committing changes...?  
+echo Commit ^& push changes...? & set /p answer="Answer (y/n):"
+
+if /i !answer! == y ( echo YAS please^^! & goto :commitLFS)
+if /i !answer! neq y (
+    echo -n |set /p=meow no last jubbie^!
+    if /i !answer! neq n ( echo "ERROR lastjubba: Please only enter" & pause & goto :lastjubba )
+    )
+if /i !answer! == n ( echo __setup done^! & exit )
+
+
+:commitLFS
 git commit -m "LFT -> updating origin" >nul 2>&1
 if %errorlevel% neq 0 (
     echo [INFO] No changes to commit.
