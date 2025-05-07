@@ -16,27 +16,91 @@ setlocal enabledelayedexpansion
 
 :: ________________________________________________________________________________________________________________________________________
                 %= USER may have to change below! =%
+echo Searching for "...\%repo%*" .... 
 
-:: path to repo
-set "PATH_=C:\OTTRepos\FSOTerminal\"
-:: alt path to repo
-rem set "PATH_=C:\Users\fcomb\OTTRepos\FSOTerminal\"
+:: ________________________________________________________________________________________________________________________________________
 
-:: path to installed python on pc
-set "PATH_PYTHON=C:\WPy64-3940\python-3.9.4.amd64\python.exe"
-:: alt path to python
-rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\python.exe" 
+:: potential repository paths
+set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub"
+ 
+
+set "repoNames=%repo% %repo%-local %repo%-main"
+set flagA=False 
+ 
+:: Loop through each path in repoPATHs
+for %%P in (%repoPATHs%) do (
+    set "currentPath=%%~P\"
+    for %%Q in (!repoNames!) do (
+        set "currentRepo=%%~Q\" 
+
+ 
+        if exist "!currentPath!!currentRepo!" (
+
+            set flagA=True
+            set "PATH_=!currentPath!!currentRepo!"
+            echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
+
+            goto :repoFound 
+
+
+        ) else (
+            echo -n |set /p="...!currentPath!!currentRepo!...x"  
+        )
+    )
+)
+
+
+
+if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b )
+
+:repoFound
+echo. & echo    -^> REPO found : !PATH_! & echo. 
+ 
+
+
+:: ________________________________________________________________________________________________________________________________________
+
+
+set flagB=False
+ 
+:: potential python paths
+set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
+echo Searching for %pyType% %pyType% ...\python.exe ...
+
+:: Loop through each path in repoPATHs
+for %%P in (%pyPATHs%) do (
+    set "currentPath=%%~P\"
+
+    if exist "!currentPath!python.exe" (
+        set flagB=True 
+
+        set "PATH_PYTHON=!currentPath!"
+        set "PYTHON_EXE=!currentPath!python.exe"
+
+        goto :pythonFound
+
+    ) else (
+         rem echo -n |set /p="... !currentPath!python.exe...x"
+
+    )
+)
+
+if %flagB% == False ( echo Python not found. Install required -^> & goto :decompressExe )
+
+:pythonFound
+echo. 
+echo    -^> PYTHON found : !PATH_PYTHON! 
 
 :: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_FSO_startup_altfileloc.bat instead
 
 :: ________________________________________________________________________________________________________________________________________
 :: bool if user wants option to debug terminal startup 
-set debug=1
+set debug=0
 
 :: ________________________________________________________________________________________________________________________________________
 
 echo --------------- Free Space Optics Terminal Software --------------------  
-echo NIST: 675.02                                     Last mod: March 12 2025
+echo NIST: 675.02                                     Last mod: May 7 2025
 echo                                                    Allie Christensen                                                          
 echo ------------------------------------------------------------------------
 echo ________________________________________________________________________
@@ -65,7 +129,7 @@ if !answer! neq y (
 :startFSO
 
 :: dynamic path DO NOT CHANGE below
-set "SETUP=%PATH_%venv\Scripts\" 
+set "SETUP=%PATH_%__fsoVenv\Scripts\" 
 set "WORK_DIR=%PATH_%camera_control\cameraprocess\"
 
 cd %PATH_%
