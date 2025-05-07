@@ -48,7 +48,7 @@ echo [OK] Git LFS initialized.
 
 :: Track large file types (modify as needed)
 echo Configuring Git LFS tracking...
-git lfs track "*.bin" "*.zip" "*.tar.gz" "*.iso" >nul 2>&1
+git lfs track "*.bin" "*.zip" "*.tar.gz" "*.iso" "*.exe" >nul 2>&1
 echo [OK] Git LFS tracking set.
 
 :: Checkout the branch
