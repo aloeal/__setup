@@ -14,7 +14,7 @@ if %errorlevel% neq 0 (
 setlocal enabledelayedexpansion
 
 :: Define the branch name
-set "BRANCH=development_2024"
+set "BRANCH=freeSpaceOptics"
 
 echo.
 echo ================================
