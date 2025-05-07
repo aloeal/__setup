@@ -70,7 +70,7 @@ set "setupFiles=__setup\__setupFiles\"
 
 
 echo ________________________________ venv auto setup ______________________________________
-echo                                                                      Last mod: May 1 2025
+echo                                                                      Last mod: May 6 2025
 echo Written by: Allie Christensen
 echo _______________________________________________________________________________________
 echo            Refer to README to see information regarding this script
@@ -84,36 +84,37 @@ echo ___________________________________________________________________________
 
 :: ________________________________________________________________________________________________________________________________________
 
-if %+ultra% ==False ( echo              no +ultraSPEED & goto :decompressExe ) else ( echo                       +ultraSPEED^^! )
+if %+ultra% ==False ( echo              no +ultraSPEED & goto :decompressExe ) else ( echo                              +ultraSPEED^^! )
 
-echo Searching for "...\%repo%*" ....
+echo Searching for "...\%repo%*" .... 
 
 :: ________________________________________________________________________________________________________________________________________
 
 :: potential repository paths
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "%USERPROFILE%\OTTRepos" "C:\Users\anc32\GitItUp" "%USERPROFILE%\GitHub"
+set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub"
  
 
 set "repoNames=%repo% %repo%-local %repo%-main"
-set flagA=False
+set flagA=False 
  
 :: Loop through each path in repoPATHs
 for %%P in (%repoPATHs%) do (
     set "currentPath=%%~P\"
     for %%Q in (!repoNames!) do (
-        set "currentRepo=%%~Q\"
+        set "currentRepo=%%~Q\" 
 
-
+ 
         if exist "!currentPath!!currentRepo!" (
-            rem echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
 
             set flagA=True
             set "PATH_=!currentPath!!currentRepo!"
+            echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
 
             goto :repoFound 
 
+
         ) else (
-            rem echo -n |set /p="...!currentPath!!currentRepo!...x"
+            echo -n |set /p="...!currentPath!!currentRepo!...x"  
         )
     )
 )
@@ -124,24 +125,24 @@ if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b
 
 :repoFound
 echo. & echo    -^> REPO found : !PATH_! & echo. 
+ 
 
 
 :: ________________________________________________________________________________________________________________________________________
 
 
 set flagB=False
-
+ 
 :: potential python paths
 set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
-echo Searching for %pyType% %pyType% "...\python.exe" ...
+echo Searching for %pyType% %pyType% ...\python.exe ...
 
 :: Loop through each path in repoPATHs
 for %%P in (%pyPATHs%) do (
     set "currentPath=%%~P\"
 
-
     if exist "!currentPath!python.exe" (
-        set flagB=True
+        set flagB=True 
 
         set "PATH_PYTHON=!currentPath!"
         set "PYTHON_EXE=!currentPath!python.exe"
@@ -158,7 +159,8 @@ if %flagB% == False ( echo Python not found. Install required -^> & goto :decomp
 
 :pythonFound
 echo. 
-echo    -^> PYTHON found : !PATH_PYTHON!
+echo    -^> PYTHON found : !PATH_PYTHON! 
+
 set ask=0 
 set skipPython=1 
 goto :decompressExe
@@ -334,7 +336,7 @@ if %ask% == 0 ( set "PYTHON_EXE=%PATH_PYTHON%\python.exe" & goto :decompressExe 
 
 echo Please input path to python^.exe: 
 set /p answer="Global Path > "
-pause 
+ 
 :: grab errors from wrong path input by user
 if exist !answer! ( echo -^> python directory ^> !PATH_PYTHON! & goto :fixed)
 if exist !answer!\ ( echo -^> python directory ^> !PATH_PYTHON! & goto :fixed)
@@ -377,17 +379,17 @@ if /i !answer! neq y (
 :decompressExe
 
 :: move to top level dir for applicaiton installations
-cd C:\
+cd "C:\" 
 
-set "setupPath_=%PATH_%%setupFiles%"
-
+set "setupPath_=%PATH_%%setupFiles%"  
+echo setup dir in: !setupPath_! 
 
 if %skipExe% == 1 ( goto :installBonus )
 
 
 :: find setup dir with executable files
 if not exist %setupPath_%__exes\exes.tar (
-    echo jammi & pause
+    echo jammi 
 
     if %debug% == 1 ( echo debugger mess -^> where the EXEs be at?^! & cmd /k )
 
@@ -440,15 +442,15 @@ call :removeExe
 :: ________________________________________________________________________________________________________________________________________
 :installBonus
 
-:: user wants to skip exe files so...
-if %skipBonus% == 1 (
-    rem just install 7 zip if user want to install winpy or py
-    if %skipPython% ==1 ( echo. & echo SKIPPING around bc pythons on board...  & goto :chkVenv )
-     rem just install 7 zip if user want to install winpy or py
-    if %skipPython% ==0 (         
-        winget install 7zip.7zip >nul || ( echo ... no 7zip of unzipping^^! ) & rem 7zip installed already 
+ 
 
-        goto :decompress )
+:: user wants to skip exe files so...
+:: just install 7 zip if user want to install winpy or py
+
+if %skipBonus% == 1 (
+    if %skipPython% == 1 ( echo. & echo SKIPPING around bc pythons on board... & goto :chkVenv )
+    if %skipPython% == 0 ( winget install 7zip.7zip >nul || echo "... no 7zip of unzipping!" )
+    goto :decompress 
     )
 
 if %bonus% GTR 1 ( echo + Bonuses... ) else if %bonus% == 1 ( echo + Bonus... )
@@ -471,18 +473,7 @@ for /l %%i in ( 1, 1, %bonus% ) do (
 set "cleanVersion=!pyType!_%pyVersion:.=%"
 set "cleanInstall=C:\"
 
-
-
-rem if not exist "%cleanInstall%" (
-rem     echo panda
-rem     if %debug% == 1 ( echo DNE -^> where the !pyType! be at?^! )
-rem     mkdir %cleanInstall% & pause 
-rem     rem grab errors
-rem     if !errorlevel! == 0 ( echo %cleanInstall% dir created^. )
-rem     if !errorlevel! neq 0 ( echo ERROR pyinstalldecom !errorlevel!: mkdir %cleanInstall% )
-rem     )
-
-:: _______________________________________________________
+:: ________________________________________________________________________________________________________________________________________
 
 :installPython
 
@@ -526,13 +517,13 @@ echo --------------------------------------------
 :: ________________________________________________________________________________________________________________________________________
 
 :chkVenv
-
-set "venvPath_=%PATH_%%venvName%\"
+ 
+set "venvPath_=%PATH_%%venvName%\" 
 
 
 if %skipVenv% == 1 ( echo Skipping venv -- & goto :lastjubba )
 
-rem echo -n | set /p =Checking for venv... 
+echo -n | set /p =Checking for venv... %venvPath_%  
  
 
 :: Ensure virtual environment exists if not create it with local python installed
@@ -542,7 +533,8 @@ if exist %venvPath_% (
     rem default will delete old venv each time
     if %debug% == 1 ( echo -n | set /p=rming... & call :removeVenv )
 
-    rem echo boom ) 
+    rem echo boom 
+) 
 
 :: create venv fresh each time 
 if not exist %venvPath_% ( echo NO virutal environment. & echo Creating...!venvPath_!.... & goto :createVenv )
@@ -557,7 +549,7 @@ echo --------------------------------------------
 
 if %debug% == 1 ( echo trying to activate new venv... )
 
-cd %venvPath_%
+cd "%venvPath_%"
 rem echo moved 
 rem cd 
 
@@ -627,20 +619,24 @@ cd "%setupPath_%__files\"
 rem echo moved again 
 rem cd 
 
-python -m pip install -r "requirements.txt" >nul 2>&1 || ( 
+rem python -m pip install -r "requirements.txt" >nul 2>&1 || ( 
+
+pip install --trusted-host pypi.org --trusted-host files..org -r requirements.txt || (
+
     echo nope 
     if !errorlevel! neq 0 ( echo ERROR pkgsF: hit another package error,  %errorlevel% & echo %setupPath_%__files\requirements.txt & cmd /k & rem call :close 
-) else if !errorlevel! == 0  ( echo      ^| done ) )
-
+) else if !errorlevel! == 0  ( pip install --trusted-host pypi.org --trusted-host files..org -r requirements.txt || ( echo bad ssl -^> Tell pip to trust PyPI ) 
+echo      ^| done )
+)
 :: _______________________________________________________
 
 :fix_pyebus
 
-cd %PATH_%
+cd "%PATH_%"
 rem echo moving
 rem cd
 
-echo -n | set /p="+ pyebus ... "
+echo "+ pyebus ... "
 
 for %%A in ("%PATH_%") do (
     set "repoPath=%%~dpA"
@@ -652,16 +648,17 @@ rem echo %repoPath%camera_control\pyebus\
 rem echo %venvPath_%\Lib\site-packages\pyebus
 
 xcopy "%repoPath%camera_control\pyebus\" "%venvPath_%\Lib\site-packages\pyebus" /E /I /Y >nul 2>&1 || (
-    echo error ebbus copy 
+    echo xcopy issues
     if %errorlevel% == 0  ( echo      ^| done 
     ) else if %errorlevel% == 4  ( echo ERROR xcopy %errorlevel%: BAD cmd syntax & call :close 
     ) else if %errorlevel% ==1 ( echo ERROR xcopyNO: NO Files found in pyebus & call :close 
-    ) else ( echo ERROR xcopy FINAL%errorlevel%: starting cmd line & cmd /k )
-    ) 
+    ) else ( echo ERROR xcopy FINAL%errorlevel%: starting cmd line & cmd /k ) )
+
+
 :: ________________________________________________________________________________________________________________________________________
             %= KEEP THE INSTALLATION TERMINAL OPEN till user closes =%
 :lastjubba
-echo --------------------------------------------
+echo -------------------------------------------- 
 rem echo -n |set/p="last jubba: "
 
 :setIcon
@@ -688,12 +685,12 @@ if %errorlevel% neq 0 ( echo ERROR Main icon: %errorlevel% & echo Please try aga
 powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $shortcut = $WshShell.CreateShortcut('!desktopPath!'); $shortcut.IconLocation = '!mainIcon!'; $shortcut.Save()"
 if %errorlevel% neq 0 ( echo ERROR Desktop icon: %errorlevel% & echo Please try again^. & pause && call :close )
 
-echo Shortcuts created^^! 
+echo Shortcuts created^^!
 echo --------------------------------------------
 
 :: ________________________________________________________________________________________________________________________________________
 
-if %ask% ==0 ( echo         Setup DONE & goto :close ) else if %debug% == 0 ( echo Done & goto :close ) else ( echo last Q! ) 
+if %ask% ==0 ( echo         Setup DONE & pause & goto :close ) else ( echo last Q! ) 
 rem ask user which python to use
 echo Setup done^! Do you to input any cmds? & set /p answer="Answer (y/n):"
 
@@ -759,13 +756,10 @@ if /i !answer! == n ( echo __setup done^! & call :close )
     echo ------ & exit /b
 
 
-:: ________________________________________________________________________________________________________________________________________
-:: label used to close out or exit batch file
-:: ensure venv deactivated and variable locality ends
-
 :close
-    deactivate & echo vevn deactivated^.
-    endlocal & echo --------------^> closing in %closetime% sec^!
-    rem inform user of closing and close after number of sec delay
-    echo -n | ping -n %closetime% 127.0.0.1 >nul 
+    echo vevn deactivated^.
+    echo --------------^> closing in %closetime% sec^! 
+    echo -n | ping -n "%closetime%" 127.0.0.1 >nul 
+    deactivate 
+    endlocal 
     exit
