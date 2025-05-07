@@ -674,7 +674,7 @@ echo --------------------------------------------
 set "batPath=%setupPath_%_batchLaunchers\_LauncherMain.bat"
 
 :: where we want the batch file to be run from 
-set "workingDir=%PATH_%camera_control\cameraprocess\"
+set "workingDir=%repoPath%camera_control\cameraprocess\"
 
 
 set "iconPath=%setupPath_%__icons\"
@@ -694,12 +694,13 @@ echo Desktop shortcut at: %desktopPath%
 
 set "shortcutDesktopPath=%desktopPath%\Launch_fsoWasp.lnk"
 
-
+if exist "%shortcutFSOPath%" del /F /Q "%shortcutFSOPath%" & echo Overwritting repo shortcut
 :: Use PowerShell to update the shortcut
 powershell -NoProfile -Command "$s=New-Object -ComObject WScript.Shell; $sc=$s.CreateShortcut('%shortcutFSOPath%'); $sc.TargetPath='%batPath%'; $sc.WorkingDirectory='%workingDir%'; $sc.IconLocation='%mainIcon%'; $sc.Save()" || (
     if %errorlevel% neq 0 ( echo ERROR creating FSO shortcut & pause && call :close ) )
 echo repo shortcut ^| done 
 
+if exist "%shortcutDesktopPath%" del /F /Q "%shortcutDesktopPath%" & echo Overwritting desktop shortcut
 powershell -NoProfile -Command "$s=New-Object -ComObject WScript.Shell; $sc=$s.CreateShortcut('%shortcutDesktopPath%'); $sc.TargetPath='%batPath%'; $sc.WorkingDirectory='%workingDir%'; $sc.IconLocation='%mainIcon%'; $sc.Save()" || ( 
     echo nah  
     if %errorlevel% neq 0 ( echo ERROR creating desktop shortcut & pause && call :close ) 
