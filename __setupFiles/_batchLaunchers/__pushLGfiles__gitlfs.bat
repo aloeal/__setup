@@ -12,6 +12,10 @@ if %errorlevel% neq 0 (
 
 @echo off
 setlocal enabledelayedexpansion
+cd ..
+
+cd ..
+cd 
 
 :: Define the branch name
 set "BRANCH=freeSpaceOptics" ||  ( set "BRANCH=TEST_blue" ) 
@@ -75,7 +79,7 @@ echo Commit ^& push changes...? & set /p answer="Answer (y/n):"
 
 if /i !answer! == y ( echo YAS please^^! & goto :commitLFS)
 if /i !answer! neq y (
-    echo -n |set /p=meow no last jubbie^!
+    echo -n |set /p="meow no last jubbie!"
     if /i !answer! neq n ( echo "ERROR lastjubba: Please only enter" & pause & goto :lastjubba )
     )
 if /i !answer! == n ( echo __setup done^! & exit )
@@ -84,14 +88,15 @@ if /i !answer! == n ( echo __setup done^! & exit )
 :commitLFS
 :: Add all changes
 echo Staging files...
-git add . >nul 2>&1
+git add __setupFiles\__exes\* >nul 2>&1 || ( git add . >nul 2>&1 )
 echo [OK] Files staged.
 
 git diff --cached
 git commit --dry-run --verbose
 git lfs push --dry-run origin %BRANCH% & pause 
 
-git commit -m "LFT -> updating origin" >nul 2>&1
+
+git -m "Adding winpy" >nul 2>&1
 if %errorlevel% neq 0 (
     echo [INFO] No changes to commit.
 ) else (
