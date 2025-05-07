@@ -15,7 +15,7 @@
 setlocal enabledelayedexpansion
 set "repo=FSOTerminal"
 set "venvName=__fsoVenv"
-
+set "file=camera_processor_V2.py"
 
 :: ________________________________________________________________________________________________________________________________________
                 %= USER may have to change below! =%
@@ -146,11 +146,11 @@ cd !WORK_DIR!
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
     echo debuggin^^! 
-    python %WORK_DIR%camera_processor_V2.py || ( echo ERROR DEBUG: oh lets get it & cmd /k )
+    python %WORK_DIR%%file% || ( echo ERROR DEBUG: oh lets get it & cmd /k )
 )
 if %debug% == 0 ( 
     echo +ultra-mode...
-    python %WORK_DIR%camera_processor_V2.py || ( echo oh hell nah...try again & pause & exit )
+    python %WORK_DIR%%file% || ( echo oh hell nah...try again & pause & exit )
 )
 
 
