@@ -61,15 +61,11 @@ if %errorlevel% neq 0 (
 )
 echo [OK] Now on branch '%BRANCH%'.
 
-:: Add all changes
-echo Staging files...
-git add . >nul 2>&1
-echo [OK] Files staged.
+
 
 :: display changes to be made in commit
-rem git diff --cached
-git commit --dry-run --verbose
-git lfs push --dry-run origin %BRANCH%
+git diff
+
 
 rem git push --dry-run
 echo dry run git push ------  
@@ -86,6 +82,15 @@ if /i !answer! == n ( echo __setup done^! & exit )
 
 
 :commitLFS
+:: Add all changes
+echo Staging files...
+git add . >nul 2>&1
+echo [OK] Files staged.
+
+git diff --cached
+git commit --dry-run --verbose
+git lfs push --dry-run origin %BRANCH% & pause 
+
 git commit -m "LFT -> updating origin" >nul 2>&1
 if %errorlevel% neq 0 (
     echo [INFO] No changes to commit.
