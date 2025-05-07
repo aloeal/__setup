@@ -47,7 +47,7 @@ for %%P in (%repoPATHs%) do (
 
 
         ) else (
-            echo -n |set /p="...!currentPath!!currentRepo!...x"  
+            rem echo -n |set /p="...!currentPath!!currentRepo!...x"  
         )
     )
 )
@@ -104,28 +104,9 @@ echo --------------- Free Space Optics Terminal Software --------------------
 echo NIST: 675.02                                     Last mod: May 7 2025
 echo                                                    Allie Christensen                                                          
 echo ------------------------------------------------------------------------
-echo ________________________________________________________________________
 echo.
 echo.
-:: ________________________________________________________________________________________________________________________________________
-            %= skip to fso launch if no debug =%
-:askDebug
 
-if debug == 0 ( goto :startFSO )
-echo Debug Setup? & set /p answer="Answer (y/n)"
-
-:: when cmd option enabled
-if !answer! == y ( echo DEBUG MODE: Setting up cmd prompt... & set debug=1 )
-
-if !answer! neq y (
-    echo -n |set /p="meow no^! "
-    rem grab other errors
-    if !answer! neq n ( echo ERROR askPy: Please input "y" or "n" & goto :askDebug ) 
-    
-    rem when cmds disabled
-    set debug=0
-    echo ... meow^! & echo -n | set /p="NORMAL MODE:" 
-    )
 
 :: ________________________________________________________________________________________________________________________________________
                 %= setup paths needed for installations =% 
@@ -133,12 +114,13 @@ if !answer! neq y (
 
 :: dynamic path DO NOT CHANGE below
 set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
-set "WORK_DIR=%PATH_%camera_control\cameraprocess\"
+set "WORK_DIR=%PATH_%sysCode\camera_control\cameraprocess\"
 
 cd %PATH_%
 
 :: ________________________________________________________________________________________________________________________________________
-echo                         FSO venv: !SETUP!
+echo                         FSO venv: 
+echo    ^> !SETUP!
 echo ________________________________________________________________________
 echo.
 :: ________________________________________________________________________________________________________________________________________
@@ -155,8 +137,7 @@ call %SETUP% || ( echo ERROR: Virtual environment activation FAIL^^! Attempt man
 
 :: ...Change working directory -> where python will work from
 cd !WORK_DIR!
-echo moved to 
-cd
+
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -165,11 +146,11 @@ cd
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
     echo debuggin^^! 
-    python %WORK_DIR%camera_processor_V2.py || ( echo oh lets get it & cmd /k )
+    python %WORK_DIR%camera_processor_V2.py || ( echo ERROR DEBUG: oh lets get it & cmd /k )
 )
 if %debug% == 0 ( 
-    echo mode & pause 
-    python %WORK_DIR%camera_processor_V2.py || ( echo oh hell nah & pause & exit )
+    echo +ultra-mode...
+    python %WORK_DIR%camera_processor_V2.py || ( echo oh hell nah...try again & pause & exit )
 )
 
 
