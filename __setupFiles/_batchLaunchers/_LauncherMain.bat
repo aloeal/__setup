@@ -13,10 +13,13 @@
 
 :: so pc wont remember variables to enviroment DO NOT REMOVE below line
 setlocal enabledelayedexpansion
+set "repo=FSOTerminal"
+set "venvName=__fsoVenv"
+
 
 :: ________________________________________________________________________________________________________________________________________
                 %= USER may have to change below! =%
-echo Searching for "...\%repo%*" .... 
+echo Searching for "...\!repo!*" .... 
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -109,6 +112,7 @@ echo.
 :: ________________________________________________________________________________________________________________________________________
             %= skip to fso launch if no debug =%
 :askDebug
+if debug == 0 ( goto :startFSO )
 echo Debug Setup? & set /p answer="Answer (y/n)"
 
 :: when cmd option enabled
@@ -129,7 +133,7 @@ if !answer! neq y (
 :startFSO
 
 :: dynamic path DO NOT CHANGE below
-set "SETUP=%PATH_%__fsoVenv\Scripts\" 
+set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
 set "WORK_DIR=%PATH_%camera_control\cameraprocess\"
 
 cd %PATH_%
@@ -142,15 +146,13 @@ echo.
                 %= activate environment and move into working dir =% 
 :actVenv
 
-if %debug% ==1 ( echo expect venv dir & echo !SETUP!activate.bat & pause )
+echo Calling... !SETUP!
 
 :: Ensure virtual environment exists if not create it with local python installed 
-if not exist !SETUP!activate.bat ( echo ERROR: Virtual environment not found^! Ensure venvSetup.bat build venv in FSO. & pause && exit /b )
+if not exist %SETUP% ( echo ERROR: Virtual environment not found^! Ensure venvSetup.bat build venv in FSO. & pause && exit /b )
 
 :: Activate the virtual environment
-call !SETUP!activate.bat
-:: when venv not working allow user to imput cmds 
-if %errorlevel% neq 0 ( echo ERROR: Virtual environment activation FAIL^! & cmd /k )
+call %SETUP% || ( echo ERROR: Virtual environment activation FAIL^^! Attempt manual & cmd /k )
 
 :: ...Change working directory -> where python will work from
 cd !WORK_DIR!
@@ -164,18 +166,13 @@ cd
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
     echo debuggin^^! 
-    cmd /k && python camera_processor_V2.py
+    python %WORK_DIR%camera_processor_V2.py || ( echo oh lets get it & cmd /k )
 )
 if %debug% == 0 ( 
     echo mode & pause 
-    python camera_processor_V2.py 
+    python %WORK_DIR%camera_processor_V2.py || ( echo oh hell nah & pause & exit )
 )
 
-:: Check if Python inside the venv exists
-if %errorlevel% neq 0 (
-    echo ERROR: FSO startup!
-    if %debug% neq 0 ( echo debuggin^^! & cmd /k ) else ( exit /b )
-	)
 
 
 :: ________________________________________________________________________________________________________________________________________
