@@ -94,10 +94,8 @@ if %flagB% == False ( echo Python not found. Install required -^> & goto :decomp
 echo. 
 echo    -^> PYTHON found : !PATH_PYTHON! 
 
-:: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_FSO_startup_altfileloc.bat instead
-
 :: ________________________________________________________________________________________________________________________________________
-:: bool if user wants option to debug terminal startup 
+
 set debug=0
 
 :: ________________________________________________________________________________________________________________________________________
@@ -112,6 +110,7 @@ echo.
 :: ________________________________________________________________________________________________________________________________________
             %= skip to fso launch if no debug =%
 :askDebug
+
 if debug == 0 ( goto :startFSO )
 echo Debug Setup? & set /p answer="Answer (y/n)"
 
