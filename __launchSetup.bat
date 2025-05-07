@@ -661,6 +661,10 @@ xcopy "%repoPath%camera_control\pyebus\" "%venvPath_%\Lib\site-packages\pyebus" 
 echo -------------------------------------------- 
 rem echo -n |set/p="last jubba: "
 
+ 
+git lfs install || ( echo already installed? ) 
+git lfs pull || ( echo unable to pull )
+
 :setIcon
 :: Get the current directory of the script
 
