@@ -48,7 +48,7 @@ echo [OK] Git LFS initialized.
 
 :: Track large file types (modify as needed)
 echo Configuring Git LFS tracking...
-git lfs track "*.bin" "*.zip" "*.tar.gz" "*.iso" >nul 2>&1
+git lfs track "*.bin" "*.zip" "*.tar.gz" "*.iso" "*.exe" 2>&1
 echo [OK] Git LFS tracking set.
 
 :: Checkout the branch
@@ -67,8 +67,8 @@ git add . >nul 2>&1
 echo [OK] Files staged.
 
 :: Commit changes
-echo Committing changes...
-git commit -m "exe.tar files changed and recompressed -> updating origin" >nul 2>&1
+echo Committing changes...?  
+git commit -m "LFT -> updating origin" >nul 2>&1
 if %errorlevel% neq 0 (
     echo [INFO] No changes to commit.
 ) else (
