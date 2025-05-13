@@ -164,3 +164,4 @@ cython_debug/
 __setupFiles/__exes
 __setupFiles/_batchLaunchers/allie
 
+/__venv
