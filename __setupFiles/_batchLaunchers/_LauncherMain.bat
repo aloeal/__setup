@@ -13,85 +13,131 @@
 
 :: so pc wont remember variables to enviroment DO NOT REMOVE below line
 setlocal enabledelayedexpansion
+set "repo=FSOTerminal"
+set "venvName=__fsoVenv"
+set "file=camera_processor_V2.py"
 
 :: ________________________________________________________________________________________________________________________________________
                 %= USER may have to change below! =%
-
-:: path to repo
-set "PATH_=C:\OTTRepos\FSOTerminal\"
-:: alt path to repo
-rem set "PATH_=C:\Users\fcomb\OTTRepos\FSOTerminal\"
-
-:: path to installed python on pc
-set "PATH_PYTHON=C:\WPy64-3940\python-3.9.4.amd64\python.exe"
-:: alt path to python
-rem set "PATH_PYTHON=C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64\python.exe" 
-
-:: Above points to the correct location for WinPython 3.9.40 on Spare (and possibly other computers), if this is wrong consider using dev_2024_FSO_startup_altfileloc.bat instead
+echo Searching for "...\!repo!*" .... 
 
 :: ________________________________________________________________________________________________________________________________________
-:: bool if user wants option to debug terminal startup 
-set debug=1
+
+:: potential repository paths
+set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub"
+ 
+
+set "repoNames=%repo% %repo%-local %repo%-main"
+set flagA=False 
+ 
+:: Loop through each path in repoPATHs
+for %%P in (%repoPATHs%) do (
+    set "currentPath=%%~P\"
+    for %%Q in (!repoNames!) do (
+        set "currentRepo=%%~Q\" 
+
+ 
+        if exist "!currentPath!!currentRepo!" (
+
+            set flagA=True
+            set "PATH_=!currentPath!!currentRepo!"
+            echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
+
+            goto :repoFound 
+
+
+        ) else (
+            rem echo -n |set /p="...!currentPath!!currentRepo!...x"  
+        )
+    )
+)
+
+
+
+if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b )
+
+:repoFound
+echo. & echo    -^> REPO found : !PATH_! & echo. 
+ 
+
+
+:: ________________________________________________________________________________________________________________________________________
+
+
+set flagB=False
+ 
+:: potential python paths
+set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
+echo Searching for %pyType% %pyType% ...\python.exe ...
+
+:: Loop through each path in repoPATHs
+for %%P in (%pyPATHs%) do (
+    set "currentPath=%%~P\"
+
+    if exist "!currentPath!python.exe" (
+        set flagB=True 
+
+        set "PATH_PYTHON=!currentPath!"
+        set "PYTHON_EXE=!currentPath!python.exe"
+
+        goto :pythonFound
+
+    ) else (
+         rem echo -n |set /p="... !currentPath!python.exe...x"
+
+    )
+)
+
+if %flagB% == False ( echo Python not found. Install required -^> & goto :decompressExe )
+
+:pythonFound
+echo. 
+echo    -^> PYTHON found : !PATH_PYTHON! 
+
+:: ________________________________________________________________________________________________________________________________________
+
+set debug=0
 
 :: ________________________________________________________________________________________________________________________________________
 
 echo --------------- Free Space Optics Terminal Software --------------------  
-echo NIST: 675.02                                     Last mod: March 12 2025
+echo NIST: 675.02                                     Last mod: May 7 2025
 echo                                                    Allie Christensen                                                          
 echo ------------------------------------------------------------------------
-echo ________________________________________________________________________
 echo.
 echo.
-:: ________________________________________________________________________________________________________________________________________
-            %= skip to fso launch if no debug =%
-:askDebug
-echo Debug Setup? & set /p answer="Answer (y/n)"
 
-:: when cmd option enabled
-if !answer! == y ( echo DEBUG MODE: Setting up cmd prompt... & set debug=1 )
-
-if !answer! neq y (
-    echo -n |set /p="meow no^! "
-    rem grab other errors
-    if !answer! neq n ( echo ERROR askPy: Please input "y" or "n" & goto :askDebug ) 
-    
-    rem when cmds disabled
-    set debug=0
-    echo ... meow^! & echo -n | set /p="NORMAL MODE:" 
-    )
 
 :: ________________________________________________________________________________________________________________________________________
                 %= setup paths needed for installations =% 
 :startFSO
 
 :: dynamic path DO NOT CHANGE below
-set "SETUP=%PATH_%venv\Scripts\" 
-set "WORK_DIR=%PATH_%camera_control\cameraprocess\"
+set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
+set "WORK_DIR=%PATH_%sysCode\camera_control\cameraprocess\"
 
 cd %PATH_%
 
 :: ________________________________________________________________________________________________________________________________________
-echo                         FSO venv: !SETUP!
+echo                         FSO venv: 
+echo    ^> !SETUP!
 echo ________________________________________________________________________
 echo.
 :: ________________________________________________________________________________________________________________________________________
                 %= activate environment and move into working dir =% 
 :actVenv
 
-if %debug% ==1 ( echo expect venv dir & echo !SETUP!activate.bat & pause )
+echo Calling... !SETUP!
 
 :: Ensure virtual environment exists if not create it with local python installed 
-if not exist !SETUP!activate.bat ( echo ERROR: Virtual environment not found^! Ensure venvSetup.bat build venv in FSO. & pause && exit /b )
+if not exist %SETUP% ( echo ERROR: Virtual environment not found^! Ensure venvSetup.bat build venv in FSO. & pause && exit /b )
 
 :: Activate the virtual environment
-call !SETUP!activate.bat
-:: when venv not working allow user to imput cmds 
-if %errorlevel% neq 0 ( echo ERROR: Virtual environment activation FAIL^! & cmd /k )
+call %SETUP% || ( echo ERROR: Virtual environment activation FAIL^^! Attempt manual & cmd /k )
 
 :: ...Change working directory -> where python will work from
 cd !WORK_DIR!
-echo moved to 
-cd
+
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -100,18 +146,13 @@ cd
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
     echo debuggin^^! 
-    cmd /k && python camera_processor_V2.py
+    python %WORK_DIR%%file% || ( echo ERROR DEBUG: oh lets get it & cmd /k )
 )
 if %debug% == 0 ( 
-    echo mode & pause 
-    python camera_processor_V2.py 
+    echo +ultra-mode...
+    python %WORK_DIR%%file% || ( echo oh hell nah...try again & pause & exit )
 )
 
-:: Check if Python inside the venv exists
-if %errorlevel% neq 0 (
-    echo ERROR: FSO startup!
-    if %debug% neq 0 ( echo debuggin^^! & cmd /k ) else ( exit /b )
-	)
 
 
 :: ________________________________________________________________________________________________________________________________________

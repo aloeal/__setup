@@ -160,8 +160,7 @@ cython_debug/
 #.idea/
 
 # automated setup & pc specific venv files 
-/venv
-__setupFiles/__exes
-__setupFiles/_batchLaunchers/allie
 
+
+/__fsoVenv
 /__venv

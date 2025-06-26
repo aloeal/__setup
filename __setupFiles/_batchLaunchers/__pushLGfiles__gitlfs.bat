@@ -12,9 +12,13 @@ if %errorlevel% neq 0 (
 
 @echo off
 setlocal enabledelayedexpansion
+cd ..
+
+cd ..
+cd 
 
 :: Define the branch name
-set "BRANCH=development_2024"
+set "BRANCH=freeSpaceOptics" ||  ( set "BRANCH=TEST_blue" ) 
 
 echo.
 echo ================================
@@ -48,7 +52,7 @@ echo [OK] Git LFS initialized.
 
 :: Track large file types (modify as needed)
 echo Configuring Git LFS tracking...
-git lfs track "*.bin" "*.zip" "*.tar.gz" "*.iso" >nul 2>&1
+git lfs track "*.bin" "*.zip" "*.tar.gz" "*.iso" "*.exe" 2>&1
 echo [OK] Git LFS tracking set.
 
 :: Checkout the branch
@@ -61,14 +65,38 @@ if %errorlevel% neq 0 (
 )
 echo [OK] Now on branch '%BRANCH%'.
 
-:: Add all changes
-echo Staging files...
-git add . >nul 2>&1
-echo [OK] Files staged.
+
+
+:: display changes to be made in commit
+git diff
+
+
+rem git push --dry-run
+echo dry run git push ------  
 
 :: Commit changes
-echo Committing changes...
-git commit -m "exe.tar files changed and recompressed -> updating origin" >nul 2>&1
+echo Commit ^& push changes...? & set /p answer="Answer (y/n):"
+
+if /i !answer! == y ( echo YAS please^^! & goto :commitLFS)
+if /i !answer! neq y (
+    echo -n |set /p="meow no last jubbie!"
+    if /i !answer! neq n ( echo "ERROR lastjubba: Please only enter" & pause & goto :lastjubba )
+    )
+if /i !answer! == n ( echo __setup done^! & exit )
+
+
+:commitLFS
+:: Add all changes
+echo Staging files...
+git add __setupFiles\__exes\* >nul 2>&1 || ( git add . >nul 2>&1 )
+echo [OK] Files staged.
+
+git diff --cached
+git commit --dry-run --verbose
+git lfs push --dry-run origin %BRANCH% & pause 
+
+
+git -m "Adding winpy" >nul 2>&1
 if %errorlevel% neq 0 (
     echo [INFO] No changes to commit.
 ) else (
@@ -77,7 +105,7 @@ if %errorlevel% neq 0 (
 
 :: Push to remote repository
 echo Pushing to remote branch: %BRANCH%...
-git push origin %BRANCH% >nul 2>&1
+git lfs push --all origin %BRANCH% >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Push failed. Check your Git settings.
     pause
@@ -92,4 +120,5 @@ echo ================================
 echo.
 
 pause
-exit /b 0
+endlocal
+exit 
