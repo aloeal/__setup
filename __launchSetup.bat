@@ -492,7 +492,7 @@ if "%pyVersion:~3,1%" == "." ( set "idVer=%pyVersion:~0,3%" ) else if "%pyVersio
         echo Python found installed already^! 
         echo --------------------------------------------
 
-        echo Uninstalling.... & ( echo -n | ping -n %waittime% 127.0.0.1 >nul ) 
+        echo Uninstalling.... & ( echo remove me^? & echo -n | ping -n %waittime% 127.0.0.1 >nul ) 
         
         winget uninstall "%pyType%" --all-versions --purge || ( echo no uninstall & cmd /k ) 
         
