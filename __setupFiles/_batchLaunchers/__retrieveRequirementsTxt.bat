@@ -15,9 +15,10 @@ setlocal enabledelayedexpansion
 
 :: ________________________________________________________________________________________________________________________________________
 
-:: path to dirs (do not change)
-set "repo=FSOTerminal"
-set "venvName=__fsoVenv" 
+call env_vars.txt
+
+:: ________________________________________________________________________________________________________________________________________
+
 
 set "fileName=requirements.txt"
 set "filePath=%TEMP%"
