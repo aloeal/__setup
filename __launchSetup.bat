@@ -18,17 +18,9 @@ if %errorlevel% neq 0 (
 :: so pc wont remember variables to enviroment
 setlocal enabledelayedexpansion
 
-:: path to dirs (do not change)
-set "repo=FSOTerminal"
-set "venvName=__fsoVenv"
-
-
 :: ________________________________________________________________________________________________________________________________________
 
-
-:: install desired
-set "pyType=WinPython"
-set "pyVersion=3.9.4"
+call env_vars.txt
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -63,7 +55,7 @@ set waittime=3
 set debug=0
 
 :: default for fso python install & setup repo structure
-set "setupFiles=__setup\__setupFiles\"
+set "setupFiles=!dir!\__setupFiles\"
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -108,7 +100,7 @@ for %%P in (%repoPATHs%) do (
 
             set flagA=True
             set "PATH_=!currentPath!!currentRepo!"
-            echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
+            echo -n |set /p="echo !currentPath!!currentRepo!!dir!\"
 
             goto :repoFound 
 
