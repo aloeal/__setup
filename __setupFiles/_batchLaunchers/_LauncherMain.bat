@@ -1,6 +1,6 @@
 @echo off
 
-:: -- NIST Free Space Optics Terminal Software --  
+:: -- NIST OchoBays Diode Controller Software --  
 
 
 :: This bat file launches eBUS software for camera/galvo control
@@ -13,19 +13,20 @@
 
 :: so pc wont remember variables to enviroment DO NOT REMOVE below line
 setlocal enabledelayedexpansion
-set "repo=FSOTerminal"
-set "venvName=__fsoVenv"
-set "file=camera_processor_V2.py"
+
+
 
 :: ________________________________________________________________________________________________________________________________________
-                %= USER may have to change below! =%
-echo Searching for "...\!repo!*" .... 
+
+call env_vars.txt
 
 :: ________________________________________________________________________________________________________________________________________
+
 
 :: potential repository paths
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub"
- 
+
+echo Searching for "...\!repo!*" .... 
+
 
 set "repoNames=%repo% %repo%-local %repo%-main"
 set flagA=False 
@@ -41,7 +42,7 @@ for %%P in (%repoPATHs%) do (
 
             set flagA=True
             set "PATH_=!currentPath!!currentRepo!"
-            echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
+            echo -n |set /p="echo !currentPath!!currentRepo!!dir!\"
 
             goto :repoFound 
 
@@ -67,7 +68,6 @@ echo. & echo    -^> REPO found : !PATH_! & echo.
 set flagB=False
  
 :: potential python paths
-set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
 echo Searching for %pyType% %pyType% ...\python.exe ...
 
 :: Loop through each path in repoPATHs
@@ -100,8 +100,8 @@ set debug=0
 
 :: ________________________________________________________________________________________________________________________________________
 
-echo --------------- Free Space Optics Terminal Software --------------------  
-echo NIST: 675.02                                     Last mod: May 7 2025
+echo ------------- NIST OchoBays Diode Controller Software ------------------  
+echo NIST: 675.02                                     Last mod: july 7 2025
 echo                                                    Allie Christensen                                                          
 echo ------------------------------------------------------------------------
 echo.
@@ -119,7 +119,7 @@ set "WORK_DIR=%PATH_%sysCode\camera_control\cameraprocess\"
 cd %PATH_%
 
 :: ________________________________________________________________________________________________________________________________________
-echo                         FSO venv: 
+echo                         !repo! venv: 
 echo    ^> !SETUP!
 echo ________________________________________________________________________
 echo.
