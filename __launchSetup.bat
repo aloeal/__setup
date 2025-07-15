@@ -18,9 +18,7 @@ if %errorlevel% neq 0 (
 :: so pc wont remember variables to enviroment
 setlocal enabledelayedexpansion
 
-:: ________________________________________________________________________________________________________________________________________
 
-call env_vars.txt
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -54,8 +52,6 @@ set closetime=30
 set waittime=3
 set debug=0
 
-:: default for fso python install & setup repo structure
-set "setupFiles=!dir!\__setupFiles\"
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -117,8 +113,8 @@ if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b
 
 :repoFound
 echo. & echo    -^> REPO found : !PATH_! & echo. 
- 
 
+call :load_var
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -375,6 +371,8 @@ cd "C:\"
 
 set "setupPath_=%PATH_%%setupFiles%"  
 echo setup dir in: !setupPath_! 
+
+call :load_var
 
 if %skipExe% == 1 ( goto :installBonus )
 
@@ -768,6 +766,10 @@ if /i !answer! == n ( echo __setup done^! & call :close )
     if %errorlevel% neq 0 ( echo "ERROR versions %errorlevel%" & goto :askVersion )
     echo ------ & exit /b
 
+:load_var
+    call %setupFiles%__files\env_vars.txt
+    echo "      == RELOADED env_var.txt =="
+    exit /b
 
 :close
     echo vevn deactivated^.
