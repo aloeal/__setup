@@ -15,23 +15,28 @@ if %errorlevel% neq 0 (
 
 :: so pc wont remember variables to enviroment
 setlocal enabledelayedexpansion
+cd /d "%~dp0\..\.."
+
 
 :: ________________________________________________________________________________________________________________________________________
 
 :: path to dirs (do not change)
-set "repo=FSOTerminal"
+rem set "repo=FSOTerminal"
 
 :: potential repository paths
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub" "C:\temp"
+rem set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub" "C:\temp"
 
 
-set "repoNames=%repo% %repo%-local %repo%-main"
-set "branch=cooked_2025"
+rem set "repoNames=%repo% %repo%-local %repo%-main"
+rem set "branch=cooked_2025"
 
 
-set subs=__setup galvo_control
+rem set subs=__setup galvo_control
 
-set "pause=True"
+:: ________________________________________________________________________________________________________________________________________
+
+
+set "pause=False"
 
 set closetime=15 
 rem units of seconds
@@ -39,14 +44,15 @@ rem units of seconds
 set "dryRun=False"
 
 
-
-:: ________________________________________________________________________________________________________________________________________
 set jub=False
 set "skipFastAtt=False"
 set "skipFastMod=False"
 set "skipFastConfig=False"
 set "printouts=True"
 set /a flag=0
+
+call :load_var
+
 :: ________________________________________________________________________________________________________________________________________
 
 rem find repo and save location 
@@ -74,11 +80,12 @@ for %%P in (%repoPATHs%) do (
 )
 
 
-if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b )
+if %flagA% == False ( echo Initializing ERROR: Repo not found. & cmd /k )
 
 :: ________________________________________________________________________________________________________________________________________
 
 :repoFound
+
 
 rem into to user
 echo.
@@ -92,14 +99,14 @@ echo.
 cd %PATH_% >nul
 git switch %branch% >nul
 git pull >nul
-git stash clear >nul || ( echo -- did not CLEAR stash ^!  -- )
+call :clearStash
 
 :: ________________________________________________________________________________________________________________________________________
 
 
-if not EXIST .gitattributes ( set "skipFastAtt=True" ) 
-if not EXIST .gitmodules ( set "skipFastMod=True" ) 
-git config --get-regexp submodule 2>nul || ( set "skipFastConfig=True" ) 
+if not EXIST .gitattributes ( set "skipFastAtt=True" & echo .GITATT ^| done ) 
+if not EXIST .gitmodules ( set "skipFastMod=True" & echo .GITMOD ^| done ) 
+( git config --get-regexp submodule 2>nul && git submodule status 2>nul ) || ( set "skipFastConfig=True" & echo .config ^| done ) 
 
 rem to skip config 
 if %skipFastConfig% == True ( 
@@ -128,16 +135,13 @@ set "staged=True"
 git diff --name-only --cached -- .gitattributes || ( set "staged=False" & echo set stage false )
 
 rem when the file was not staged as opposed to an error 
-git rm --q --f .gitattributes 2>nul || ( 
-    if !staged! ==False ( echo stage light please^!... 
-    ) else ( echo ERROR rm ^.gitattributes ) 
-)
+git rm --q --f .gitattributes 2>nul || (  if !staged! ==False ( echo stage light please^!... ) ) 
 
 
 
 :endloopAtt
 rem remove from index 
-git rm --cached .gitattributes 2>nul || ( if %staged% == %skipFastConfig% ( echo .gitattributes            ^| index removed ) else ( echo ERROR .gitattributes cache )) 
+git rm --cached .gitattributes 2>nul || ( if %staged% == %skipFastConfig% ( echo .gitattributes            ^| index removed ) ) 
 
 rem reset global variables
 set jub=False
@@ -152,12 +156,12 @@ if %skipFastMod% == "True" ( echo II^. & goto :rmGitConfig )
 git diff --name-only --cached -- .gitmodules || ( set "staged=False" & echo set stage false )
 
 rem when the file was not staged as opposed to an error 
-( git rm --q --f .gitmodules 2>nul && echo .gitmodules          ^| index removed ) || ( echo ERROR rm ^.gitmodules & pause )
+git rm --q --f .gitmodules 2>nul || (  if !staged! ==False ( echo stage light please^!... ) ) 
 
 
 :endloopMod
 rem remove from index 
-git rm --cached .gitmodules 2>nul || ( if %staged% == %skipFastConfig% ( echo .gitmodules          ^| index removed ) else ( echo ERROR .gitmodules cache ) ) 
+git rm --cached .gitmodules 2>nul || ( if %staged% == %skipFastConfig% ( echo .gitmodules          ^| index removed ) ) 
 
 rem reset global variables
 set jub=False
@@ -203,12 +207,14 @@ rem git add -A 2>nul || echo      -^> No staged changes to remove
 git clean -fdx 2>nul || echo nothing to clean 
 if %printouts%==True ( echo. & echo     ----------------------- & echo         -- CLEANED -- & echo        ----------------------- ) 
 
-if %pause% == True (  pause )
 
 :: ________________________________________________________________________________________________________________________________________
 
 :commit
-git stash clear >nul || ( echo -- did not CLEAR stash ^!  -- )
+
+call :clearStash
+
+if %pause% == True (  pause )
 
 echo ------------------------------------------------------------
 
@@ -217,6 +223,7 @@ echo Dry run of commit and then commit stage...
 
 if %dryRun% == True ( echo DRY-RUN mode - no real commit OR push going to close... & pause & goto :close )  
 
+if %skipFastAtt% == True ( echo cestFin 3 & goto :skipAtt )
 rem add all config and git changes to stage
 git add .gitattributes 2>nul
 git commit --dry-run -m "Updated .gitattributes -> remove lfs " || ( goto :skipAtt ) 
@@ -226,6 +233,7 @@ git commit -m "Updated .gitattributes -> remove lfs "
 
 
 :skipAtt
+if %skipFastMod% == True (echo cestFin 2 &  goto :skipMod )
 git add .gitmodules 2>nul 
 git commit --dry-run -m "Updated .gitmodules -> remove submodule " || ( goto :skipMod ) 
 if %pause% == True ( echo ...ok to commit ^.gitmodules^? & pause ) else ( timeout /nobreak /t 1 2>nul ) 
@@ -234,15 +242,20 @@ git commit -m "Updated .gitmodules -> remove submodule "
 
 
 :skipMod
+if %skipFastConfig% ==True (echo cestFin 1 )
+
 
 rem commit the rest -> commits removal of submodules
+
 for %%I in (%subs%) do ( 
-    git add %%I 2>nul 
-    git commit --dry-run -m "Removing %%I submodule traces from branch"  || ( goto :cestFin ) 
+    git diff --name-only --cached -- %%I || ( set "staged=False" & echo set stage false & git add %%I 2>nul )
 
-    if %pause% == True ( echo ...ok to commit rest^? & pause ) else ( timeout /nobreak /t 1 2>nul ) 
+    
+    git commit --dry-run -am "Removing %%I submodule traces from branch"  
 
-    git commit -m "Removing %%I submodule traces from branch" 
+    if %pause% == True ( echo ...ok to commit rest^? & pause ) else ( timeout /nobreak /t 3 2>nul ) 
+
+    git commit -am "Removing %%I submodule traces from branch" 
     ) 
 
 
@@ -260,6 +273,61 @@ git submodule status 2>nul || ( echo       ^| verified ^|  )
 echo _________________________________________________________________________________________________
 
 goto :close 
+
+
+
+:: ________________________________________________________________________________________________________________________________________
+
+
+:verify
+
+rem check repo status and ensure clean 
+echo. 
+echo ___________________________ VERIFY REPO CLEAN ___________________________
+echo.
+echo            -^>  ORIGIN ^& LOCAL state NA if clean.
+echo. 
+echo -n | set /p="ORIGIN :"  & git config --get-regexp --show-origin submodule || echo          NA
+echo ------------------------------------------------------------
+echo -n | set /p="LOCAL :" & git config --get-regexp submodule || echo          NA
+echo.
+echo ____________________________________________________________________________
+echo. & exit /b 
+
+
+:intro
+    rem remove all submodule refs 
+    echo            ----------------------- current config ------------------------
+    echo. 
+    echo -n | set /p=" .CONFIG"
+    git config --get-regexp submodule 
+    echo -n | set /p=" :STATUS"
+    git submodule status
+    echo. 
+    echo            -------------------- adjusting config ... ---------------------
+    exit /b
+
+rem :load_var
+
+rem     call ".\__setup\__setupFiles\__files\env_vars.txt" || echo ERRO loading envvar
+rem     echo "      == RELOADED env_var.txt =="
+rem     exit /b
+
+:load_var
+    cd . 
+    echo here
+    cd 
+    call .\__setupFiles\__files\env_vars.bat || (
+        echo [ERROR] Failed to load env_vars.txt
+        exit /b 1
+    )
+    echo [INFO] == Reloaded env_vars.txt ==
+    exit /b
+
+:clearStash
+    git stash clear >nul || ( echo -- did not CLEAR stash ^!  -- )
+    exit /b 
+
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -284,34 +352,3 @@ echo -n | set /p=BYE^!
 
 endlocal 
 exit
-
-:: ________________________________________________________________________________________________________________________________________
-
-
-:verify
-
-rem check repo status and ensure clean 
-echo. 
-echo ___________________________ VERIFY REPO CLEAN ___________________________
-echo.
-echo            -^>  ORIGIN ^& LOCAL state NA if clean.
-echo. 
-echo -n | set /p="ORIGIN :"  & git config --get-regexp --show-origin submodule || echo          NA
-echo ------------------------------------------------------------
-echo -n | set /p="LOCAL :" & git config --get-regexp submodule || echo          NA
-echo.
-echo ____________________________________________________________________________
-echo. & exit /b 
-
-
-:intro
-rem remove all submodule refs 
-echo            ----------------------- current config ------------------------
-echo. 
-echo -n | set /p=" .CONFIG"
-git config --get-regexp submodule 
-echo -n | set /p=" :STATUS"
-git submodule status
-echo. 
-echo            -------------------- adjusting config ... ---------------------
-exit /b
