@@ -1,11 +1,11 @@
 :: env_vars.txt
-set "repo=OchoBays"
-set "venvName=__ochoVenv"
+set "repo=FSOTerminal"
+set "venvName=__fsoVenv"
 set "dir=__fastBadJubbies"
-set "file=main.py"
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub" "C:\GitHub" 
+set "file=camera_processor_V1_2.py"
+set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub" "C:\GitHub" "C:\temp"
 set "repoNames=%repo% %repo%-local %repo%-main"
-set "branch=main"
+set "branch=cooked_2025"
 
 
 set subs=__setup galvo_control
