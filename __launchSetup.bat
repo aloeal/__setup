@@ -37,7 +37,7 @@ set +ultra=True
 :: bool if user wants option to skip many qs and go for defaults
 set ask=1
 
-rem if python already installed on pc
+rem user wants reinstalled python or winpython, skip =1
 set skipPython=0
 
 
