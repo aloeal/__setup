@@ -18,17 +18,7 @@ if %errorlevel% neq 0 (
 :: so pc wont remember variables to enviroment
 setlocal enabledelayedexpansion
 
-:: path to dirs (do not change)
-set "repo=FSOTerminal"
-set "venvName=__fsoVenv"
 
-
-:: ________________________________________________________________________________________________________________________________________
-
-
-:: install desired
-set "pyType=WinPython"
-set "pyVersion=3.9.4"
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -62,8 +52,6 @@ set closetime=30
 set waittime=3
 set debug=0
 
-:: default for fso python install & setup repo structure
-set "setupFiles=__setup\__setupFiles\"
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -108,7 +96,7 @@ for %%P in (%repoPATHs%) do (
 
             set flagA=True
             set "PATH_=!currentPath!!currentRepo!"
-            echo -n |set /p="echo !currentPath!!currentRepo!__setup\"
+            echo -n |set /p="echo !currentPath!!currentRepo!!dir!\"
 
             goto :repoFound 
 
@@ -125,8 +113,8 @@ if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b
 
 :repoFound
 echo. & echo    -^> REPO found : !PATH_! & echo. 
- 
 
+call :load_var
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -384,6 +372,8 @@ cd "C:\"
 set "setupPath_=%PATH_%%setupFiles%"  
 echo setup dir in: !setupPath_! 
 
+call :load_var
+
 if %skipExe% == 1 ( goto :installBonus )
 
 
@@ -492,7 +482,7 @@ if "%pyVersion:~3,1%" == "." ( set "idVer=%pyVersion:~0,3%" ) else if "%pyVersio
         echo Python found installed already^! 
         echo --------------------------------------------
 
-        echo Uninstalling.... & ( echo -n | ping -n %waittime% 127.0.0.1 >nul ) 
+        echo Uninstalling.... & ( echo remove me^? & echo -n | ping -n %waittime% 127.0.0.1 >nul ) 
         
         winget uninstall "%pyType%" --all-versions --purge || ( echo no uninstall & cmd /k ) 
         
@@ -776,6 +766,10 @@ if /i !answer! == n ( echo __setup done^! & call :close )
     if %errorlevel% neq 0 ( echo "ERROR versions %errorlevel%" & goto :askVersion )
     echo ------ & exit /b
 
+:load_var
+    call %setupFiles%__files\env_vars.txt
+    echo "      == RELOADED env_var.txt =="
+    exit /b
 
 :close
     echo vevn deactivated^.

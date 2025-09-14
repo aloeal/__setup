@@ -1,38 +1,7 @@
-# Required packages for the FSO galvo control software: 
-# Implemented by venvSetup.bat
-# note: bat file will install necessary python and below 
+# Dependancy versions for system software below, this file used by _flex in automated setup procedures
 
-alabaster==0.7.16
-attrs==25.1.0
-babel==2.17.0
-blosc2==2.5.1
-certifi==2025.1.31
-charset-normalizer==3.4.1
-click==8.1.8
-click-plugins==1.1.1
-cligj==0.7.2
-colorama==0.4.6
-contourpy==1.3.0
-cycler==0.12.1
-deprecation==2.1.0
-docutils==0.21.2
-fiona==1.10.1
-flexcache==0.3
-flexparser==0.4
-fonttools==4.56.0
-geopandas==0.9.0
-h5py==3.13.0
-idna==3.10
-imagesize==1.4.1
-importlib-metadata==8.6.1
-importlib-resources==6.5.2
-jdcal==1.4.1
-jinja2==3.1.6
-jupyter-packaging==0.9.1
-kiwisolver==1.4.7
-llvmlite==0.43.0
-looseversion==1.3.0
-lxml==5.3.1
+
+Jinja2==3.1.6
 MarkupSafe==3.0.2
 matplotlib==3.9.4
 msgpack==1.1.0
@@ -86,3 +55,13 @@ zipp==3.21.0
 anytree
 git-lfs
 pyinstaller
+
+
+PyQt6==6.9.1
+PyQt6-Qt6==6.9.1
+PyQt6_sip==13.10.2
+PySide6==6.9.1
+PySide6_Addons==6.9.1
+PySide6_Essentials==6.9.1
+qt-material==2.17
+shiboken6==6.9.1
