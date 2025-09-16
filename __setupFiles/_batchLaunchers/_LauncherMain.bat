@@ -15,6 +15,7 @@ echo Last mod: Sep 15 2025
 echo Created by: Allie Christensen Brooks
 
 :: ________________________________________________________________________________________________________________________________________
+:: ________________________________________________________________________________________________________________________________________
         %= ensure prop dir and load files needed to setup software in __setupFiles =% 
 
 :initilization
@@ -36,7 +37,7 @@ rem run funks.bat to set repo location PATH_ and respectively python or winpytho
 call :startFunky
 
 if  %loser%==True ( goto :startBat ) else ( echo "Your a winner chckn dinner, env comming in hot" & pause )
-
+:: ________________________________________________________________________________________________________________________________________
 :: ________________________________________________________________________________________________________________________________________
                 %= activate environment and move into working dir =% 
 :actVenv
