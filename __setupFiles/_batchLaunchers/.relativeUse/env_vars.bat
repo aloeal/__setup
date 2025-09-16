@@ -28,9 +28,14 @@ rem DO NOT CHANGE below
 
 set "repoNames=%repo% %repo%-local %repo%-main"
 set debug=0
-set "loser=True"
+set "loser=False"
+set exeName=None
 
+if /I %pyType%=="python" ( set exeName="python.exe" ) 
+if %pyType%=="winpython" (set exeName="WinPython Command Prompt.exe" ) else ( set "exename=!pyType!" )
 
+echo set exename
+echo %exeName%
 
 
 rem unused (for later) dynamic path
