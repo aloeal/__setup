@@ -7,8 +7,8 @@
 :: - @ECHO lines do not print to console, only use rem within loops and :: outside loops for comments
 
 :: NEW Setup: 
-:: change PATH_ on line 15 in "" to path where >\FSOTerminal-main\camera_control\cameraprocess is located on PC getting eBUS
-:: change PATH_PYTHON on line 20 in "" to path where python executable (python.exe) is located on PC 
+:: change PATH_ on line 15 in "" to path where working directory is located on PC 
+:: change PATH_PYTHON on line 20 in "" to path where python or winpy executable (python.exe) is located 
 :: ________________________________________________________________________________________________________________________________________
 
 :: so pc wont remember variables to enviroment DO NOT REMOVE below line
@@ -17,7 +17,7 @@ setlocal enabledelayedexpansion
 
 
 
-:: ________________________________________________________________________________________________________________________________________
+::________________________________________________________________________________________________________________________________________
 
 
 :: potential repository paths
