@@ -23,7 +23,7 @@ setlocal enabledelayedexpansion
 :: ________________________________________________________________________________________________________________________________________
 
 :: DO NOT CHANGE below
-set +ultra=Trueb
+set +ultra=True
 :: bool if user wants option to skip many qs and go for defaults
 set ask=1
 
@@ -446,7 +446,7 @@ if %skipBonus% == 1 (
 if %bonus% GTR 1 ( echo + Bonuses... ) else if %bonus% == 1 ( echo + Bonus... )
 echo.
 
-for %%F in (%bonus%) do ( 
+for /l %%i in ( 1, 1, %bonus% ) do (
 
     call set bonusI=%%bonus%%i%%
     winget install !bonusI! >nul 2>&1
