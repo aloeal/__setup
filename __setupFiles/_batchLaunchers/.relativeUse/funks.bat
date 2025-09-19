@@ -32,7 +32,7 @@
 :load_var
 
     echo where env_vars.bat & cd 
-    call 
+    call env_vars.bat
     echo "      == RELOADED env_var.txt =="
     goto :eof
 
