@@ -1,4 +1,4 @@
-# Required packages for the FSO galvo control software: 
+# Required packages for the AgNext data pull and process software: 
 # Implemented by venvSetup.bat
 # note: bat file will install necessary python and below 
 
