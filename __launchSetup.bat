@@ -72,17 +72,19 @@ echo ___________________________________________________________________________
 
 :: ________________________________________________________________________________________________________________________________________
 
-if %+ultra% ==False ( echo              no +ultraSPEED & goto :decompressExe ) else ( echo                              +ultraSPEED^^! )
+if %+ultra% ==False ( echo              no +ultraSPEED & goto :decompressExe ) else (
+		cd /d "%~dp0\..\.." 
+		echo                              +ultraSPEED^^!
+		call :load_var 
+		goto :decompressExe
+		)
 
 echo Searching for "...\%repo%*" .... 
 
 :: ________________________________________________________________________________________________________________________________________
 
 :: potential repository paths
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub"
- 
 
-set "repoNames=%repo% %repo%-local %repo%-main"
 set flagA=False 
  
 :: Loop through each path in repoPATHs
@@ -114,7 +116,7 @@ if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b
 :repoFound
 echo. & echo    -^> REPO found : !PATH_! & echo. 
 
-call :load_var
+
 
 :: ________________________________________________________________________________________________________________________________________
 
@@ -122,7 +124,6 @@ call :load_var
 set flagB=False
  
 :: potential python paths
-set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
 echo Searching for %pyType% %pyType% ...\python.exe ...
 
 :: Loop through each path in repoPATHs
@@ -138,7 +139,7 @@ for %%P in (%pyPATHs%) do (
         goto :pythonFound
 
     ) else (
-         rem echo -n |set /p="... !currentPath!python.exe...x"
+         break & rem echo "... !currentPath!python.exe...x"
 
     )
 )
@@ -372,7 +373,6 @@ cd "C:\"
 set "setupPath_=%PATH_%%setupFiles%"  
 echo setup dir in: !setupPath_! 
 
-call :load_var
 
 if %skipExe% == 1 ( goto :installBonus )
 
