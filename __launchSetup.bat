@@ -1,158 +1,57 @@
-@echo off
-:: Batch file to setup virtual environment given:
-:: -> python is installed at PATH_PYTHON
-:: -> && a requirements.txt is provided at PATH_
+rem *********************************************************************************************
+rem *********************************************************************************************
+rem *********************************************************************************************
+
+@echo off & setlocal enabledelayedexpansion 
+%= above line = MUST have pc not remember variables to enviroment DO NOT REMOVE =% 
+
 
 :: ________________________________________________________________________________________________________________________________________
+        %= output script information to terminal for user  =% 
 
-:: Ensure script runs as administrator
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Elevating privileges...
-    powershell -Command "Start-Process cmd -ArgumentList '/c \"\"%~f0\"\"' -Verb RunAs -WindowStyle Normal" && exit /b
-)
+
+if %loser%==True ( goto :initilization ) else ( echo testing intro... )
+
+
+echo -- aloeBrooks automated software initilization -- 
+echo Last mod: Sep 15 2025
+echo Created by: Allie Christensen Brooks
+
 :: ________________________________________________________________________________________________________________________________________
+:: ________________________________________________________________________________________________________________________________________
+        %= ensure prop dir and load files needed to setup software in __setupFiles =% 
 
-@echo off
+:initilization
 
-:: so pc wont remember variables to enviroment
-setlocal enabledelayedexpansion
+echo ****************** & echo starting up... & echo ******************
 
+cd /d "%~dp0\..\.." & call :displayCwd
+
+if  %loser%==True ( echo loserville ) else ( echo its giving our great trimphed czar & pause )
+
+rem *********************************************************************************************
+        %= import funks.bat and requirements.txt and env_vars.txt =% 
+
+
+rem load file with batch functions to initalize terminal operation and repo location
+call :load_funks | echo ERROR loading funkies oh no!
+
+rem run funks.bat to set repo location PATH_ and respectively python or winpython path 
+call :startFunky
+
+if  %loser%==True ( goto :startBat & pause ) else ( echo "Your a winner chckn dinner, env comming in hot" & pause )
+
+rem *********************************************************************************************
+rem *********************************************************************************************
+rem *********************************************************************************************
 
 
 :: ________________________________________________________________________________________________________________________________________
 
 :: DO NOT CHANGE below
-set +ultra=True
-:: bool if user wants option to skip many qs and go for defaults
-set ask=1
-
-rem user wants reinstalled python or winpython, skip =1
-set skipPython=0
 
 
-rem bools if user wants debug terminal startup or change installs
-set skipVenv=0
-rem user wants to install git bash and executables in exe.tar
-set skipExe=1
-set skipGit=0
-set skipBonus=1
-
-rem bonus exe installable via winget
-set "bonus1=voidtools.Everything"
-set "bonus2=Microsoft.VCRedist.2013.x86"
-rem set "bonus3="
-
-:: CHANGE ME if you add or subtract bonus installs...should match number of installs
-set bonus=3
-
-
-:: do not change below
-set closetime=30
-set waittime=3
-set debug=0
-
-
-
-:: ________________________________________________________________________________________________________________________________________
-
-
-echo ________________________________ venv auto setup ______________________________________
-echo                                                                      Last mod: May 6 2025
-echo Written by: Allie Christensen
-echo _______________________________________________________________________________________
-echo            Refer to README to see information regarding this script
-rem    ________________________________________________________________________
-rem      FAST MODE:      no questions, OVERWRITES any winpythin or python...
-rem                              ...on pc, installs all exes ^& packages
-rem      NORMAL MODE:    Qs per install
-rem      DEBUG MODE:     Qs, debugging output to terminal ^& command line
-rem                              dialog (cmd /k when needed)
-echo _______________________________________________________________________________________
-
-:: ________________________________________________________________________________________________________________________________________
-
-if %+ultra% ==False ( echo              no +ultraSPEED & goto :decompressExe ) else ( echo                              +ultraSPEED^^! )
-
-echo Searching for "...\%repo%*" .... 
-
-:: ________________________________________________________________________________________________________________________________________
-
-:: potential repository paths
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub"
- 
-
-set "repoNames=%repo% %repo%-local %repo%-main"
-set flagA=False 
- 
-:: Loop through each path in repoPATHs
-for %%P in (%repoPATHs%) do (
-    set "currentPath=%%~P\"
-    for %%Q in (!repoNames!) do (
-        set "currentRepo=%%~Q\" 
-
- 
-        if exist "!currentPath!!currentRepo!" (
-
-            set flagA=True
-            set "PATH_=!currentPath!!currentRepo!"
-            echo -n |set /p="echo !currentPath!!currentRepo!!dir!\"
-
-            goto :repoFound 
-
-
-        ) else (
-            echo -n |set /p="...!currentPath!!currentRepo!...x"  
-        )
-    )
-)
-
-
-
-if %flagA% == False ( echo Initializing ERROR: Repo not found. & pause & exit /b )
-
-:repoFound
-echo. & echo    -^> REPO found : !PATH_! & echo. 
-
-call :load_var
-
-:: ________________________________________________________________________________________________________________________________________
-
-
-set flagB=False
- 
-:: potential python paths
-set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
-echo Searching for %pyType% %pyType% ...\python.exe ...
-
-:: Loop through each path in repoPATHs
-for %%P in (%pyPATHs%) do (
-    set "currentPath=%%~P\"
-
-    if exist "!currentPath!python.exe" (
-        set flagB=True 
-
-        set "PATH_PYTHON=!currentPath!"
-        set "PYTHON_EXE=!currentPath!python.exe"
-
-        goto :pythonFound
-
-    ) else (
-         rem echo -n |set /p="... !currentPath!python.exe...x"
-
-    )
-)
-
-if %flagB% == False ( echo Python not found. Install required -^> & goto :decompressExe )
-
-:pythonFound
-echo. 
-echo    -^> PYTHON found : !PATH_PYTHON! 
-
-set ask=0 
-set skipPython=1 
-goto :decompressExe
-
+if %+ultra% ==False ( echo              no +ultraSPEED ) else ( echo                              +ultraSPEED^^! & goto :decompressExe)
 
 
 :: ________________________________________________________________________________________________________________________________________
@@ -367,7 +266,7 @@ if /i !answer! neq y (
 :decompressExe
 
 :: move to top level dir for applicaiton installations
-cd "C:\" 
+
 
 set "setupPath_=%PATH_%%setupFiles%"  
 echo setup dir in: !setupPath_! 
