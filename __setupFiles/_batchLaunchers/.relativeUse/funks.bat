@@ -39,7 +39,8 @@
 
     rem open an admin terminal for user to ensure permissions are not an issue with installations 
     call :openAdmin
-
+    
+    cd /d "%~dp0\..\..\.."
     call :helloScript
 
     rem import variables from env_var.bat
@@ -137,7 +138,7 @@ rem ****************************************************************************
 
 
 :findDir
-    cd /d "%~dp0\..\..\.."
+
     set flag=False 
      
     rem Loop through each path in repoPATHs
