@@ -42,30 +42,12 @@ rem ****************************************************************************
 
 
 :start
-echo started... 
-:: ________________________________________________________________________________________________________________________________________
-:: ________________________________________________________________________________________________________________________________________
-                %= activate environment and move into working dir =% 
-:actVenv
+echo started...
 
-cd %PATH_%
-
-:: ________________________________________________________________________________________________________________________________________
-echo                         !repo! venv: 
-echo    ^> !SETUP!
-echo ________________________________________________________________________
-echo.
-
-
-rem Ensure virtual environment exists if not create it with local python installed 
-if not exist %SETUP% ( echo ERROR: Virtual environment not found^! Ensure venvSetup.bat build venv in FSO. & pause && exit /b )
-
-:: Activate the virtual environment
-call %SETUP% || ( echo ERROR: Virtual environment activation FAIL^^! Attempt manual & cmd /k )
 
 :: ________________________________________________________________________________________________________________________________________
 
-:startBat
+:run
 
 :: user wants to debug -> enable cmd /k 
 if %debug% neq 0 ( 
@@ -74,20 +56,22 @@ if %debug% neq 0 (
 )
 if %debug% == 0 ( 
     echo +ultra-mode...
-    %pyPATHs% %repoPATHs%%file% || ( echo oh hell nah...try again & pause & goto :close )
+    %pyPATHs% %repoPATHs%%file% || ( echo oh hell nah...try again & pause & goto :exit )
 )
-
 
 
 :: ________________________________________________________________________________________________________________________________________
 
+:load_funks
+    cd . 
+    echo here
+    cd 
+    call .\__setupFiles\_batchLaunchers\.relativeUse\funks.bat || (
+        echo [ERROR] Failed to load funks.bat
+        exit /b 
+    )
+    echo [INFO] == Reloaded funks.bat ==
+    exit /b
 
-
-:load_var
-    call %PATH_%\__setup\__setupFiles\__files\env_vars.txt
-    echo "      == RELOADED env_var.txt ==" & exit /b
-
-:close
-    endlocal
-    deactivate
-    exit 
+:exit
+    call :close
