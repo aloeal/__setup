@@ -4,23 +4,22 @@ rem _________________________________________________________________________
 rem CHANGE BELOW
 
 rem repository information for the launcher to import 
-set "repo=FSOTerminal"
-set "branch=wasp2BlueSky"
+set "repo=moomoo"
+set "branch=main"
 
 rem potential repository paths
-set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub" "C:\GitHub" "C:\temp"
+set repoPATHs="C:\OTTRepos" "C:\Users\fcomb\OTTRepos" "C:\Users\anc32\GitItUp" "C:\Users\fcomb\GitHub" "C:\GitHub" "C:\temp" "C:\"
 
 rem main python document ran to start gui
-set "dir=camera_control\cameraprocess"
-set "file=camera_processor_V1_2.py"
-
+set "dir=sysCode\"
+set "file=agNext_Gen.py"
 
 
 rem installtion information for system software 
-set "pyType=WinPython"
-set "pyVersion=3.9.4"
+set "pyType=Python"
+set "pyVersion=3.8"
 set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
-
+set pyPATHs="C:\Program Files\ "C:\" "C:\Users\"
 
 
 set skipPython=0
@@ -33,8 +32,7 @@ set +ultra=True & rem fastest setup method
 set debug=0
 
 
-if %skipPython%==0 ( set skipVenv=0 ) else ( set skipVenv=1 )
-if %+ultra%==True ( set ask=0 ) else ( set ask=1)
+
 
 rem to install git bash into repo 
 set skipGit=0
@@ -44,10 +42,13 @@ set skipExe=1
 
 rem whether to skip .exe or uncompressed files in __files 
 set skipBonus=1
+rem _________________________________________________________________________
 
 
+if %skipPython%==0 ( set skipVenv=0 ) else ( set skipVenv=1 )
+if %+ultra%==True ( set ask=0 ) else ( set ask=1)
 
-set closetime=30
+set closetime=30 & rem units OF SECONDS
 set waittime=3
 set "loser=False"
 set "flagVenv=False"
@@ -64,15 +65,16 @@ echo set exename
 echo %exeName%
 
 
-rem unused (for later) dynamic path
  
-rem set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
-rem set "WORK_DIR=%PATH_%sysCode\camera_control\cameraprocess\"
-rem set bonus="voidtools.Everything" "Microsoft.VCRedist.2013.x86"
+set bonus="voidtools.Everything" 
 
-rem set bonus=3
-rem set "venvName=__fsoVenv"
-rem set "initBranch=freeSpaceOptics"
-rem set "dir=_init"
-rem set "initLink=https://github.com/aloeal/_flex.git"
-rem set subs=__setup galvo_control
+set bonus=1
+set "venvName=__mooVenv"
+set "flexDir=_init"
+set "initLink=https://github.com/aloeal/_flex.git"
+set subs=__setup
+
+set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
+set "WORK_DIR=%PATH_%%dir%%flexDir%"
+
+
