@@ -6,13 +6,12 @@ rem ****************************************************************************
 @echo off & setlocal enabledelayedexpansion 
 %= above line = MUST have pc not remember variables to enviroment DO NOT REMOVE =% 
 
-
 :: ________________________________________________________________________________________________________________________________________
         %= output script information to terminal for user  =% 
 
-echo -- aloeBrooks automated submodule _flex debugger file -- 
-echo Last mod: Sep 22 2025
-echo Created by: Allie Christensen Brooks
+
+set "lastMod=Sep 22 2025"
+set "title=automated removed the bruja"
 
 :: ________________________________________________________________________________________________________________________________________
 :: ________________________________________________________________________________________________________________________________________
@@ -33,6 +32,10 @@ call :load_funks | echo ERROR loading funkies oh no!
 rem run funks.bat to set repo location PATH_ and respectively python or winpython path 
 call :startFunky | echo ERROR starting the funk 
 
+
+call :helloSoftware %title% %lastMod%
+
+
 rem *********************************************************************************************
 rem *********************************************************************************************
 rem *********************************************************************************************
@@ -40,9 +43,6 @@ rem ****************************************************************************
 
 :start
 echo made it to the start
-
-
-set "lastMod=Sep 22 2025"
 
 
 set "dryRun=False"
@@ -243,7 +243,7 @@ call :close
     cd . 
     echo here
     cd 
-    call .\__setupFiles\_batch\.relativeUse\funks.bat || (
+    call .\__setupFiles\_batchLaunchers\.relativeUse\funks.bat || (
         echo [ERROR] Failed to load funks.bat
         exit /b 
     )
