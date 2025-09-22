@@ -3,16 +3,7 @@
 
 
 :startFunky
-
-
-
-    rem open an admin terminal for user to ensure permissions are not an issue with installations 
-    call :openAdmin
-
-    call :helloScript
-
-    rem import variables from env_var.bat
-    call :load_var
+    call :_init
 
     rem look for repository cloned ontol pc using generalized paths in env_var.bat
     call :findDir
@@ -31,6 +22,32 @@
     rem belows essentially returns code back to file that called originally
     goto :eof
 
+:startAlpha
+    call :_init
+
+    rem determine if venv exists or needs creation
+    call :chkVenv
+
+    call :actVenv
+    
+    rem belows essentially returns code back to file that called originally
+    goto :eof
+
+
+:_init
+    set "parent=%~1"
+
+    rem open an admin terminal for user to ensure permissions are not an issue with installations 
+    call :openAdmin
+
+    call :helloScript
+
+    rem import variables from env_var.bat
+    call :load_var
+
+    rem belows essentially returns code back to file that called originally
+    if %parent% == "%file%" ( call :startAlpha & echo alpha ) else ( call :startFunky & echo funky )
+    
 rem *********************************************************************************************
 rem *******   sys & user                             *******************************************
 rem *********************************************************************************************
@@ -57,7 +74,9 @@ rem ****************************************************************************
     goto :eof
 
 :helloSoftware
-    echo --  -- Last mod: 
+    set "title=%~1"
+    set "lastMod=%~2"
+    echo -- %title% -- Last mod: %lastMod%
     goto :eof
 
 :: ________________________________________________________
@@ -245,7 +264,7 @@ rem ****************************************************************************
 	    )
 	)
 
-	if %flag% == False ( echo !pyType! not found. Install required... & where python & where WinPython & goto :decompressExe )
+	if %flag% == False ( echo !pyType! not found. Install required... & where python & where WinPython & pause && exit /b )
 
 	:found
 	echo. 
@@ -260,14 +279,35 @@ rem ****************************************************************************
     set "venvPath_=%PATH_%%venvName%\" >nul || ( echo -- ERROR setting venv?  -- & pause & cmd /k)
     echo venv Path set -^> %venvPath_%
     goto :eof
-:: ________________________________________________________
+:: ________________________________________________________________________________________________________________________________________
+
 
 :chkVenv
 
     rem Ensure virtual environment exists if not det sys installs
-    if exist %venvPath_%Scripts\activate.bat ( echo VENV FOUND ---- & set "flagVenv=True" ) else ( echo NONE^. Freezing cw setup... & goto :startWrite ) 
+    if exist %SETUP% ( echo VENV FOUND ---- & set "flagVenv=True" ) else ( echo NONE^. Freezing cw setup... & pause && exit /b ) 
     goto :eof
 
+:: ________________________________________________________________________________________________________________________________________
+                %= activate environment and move into working dir =% 
+:actVenv
+
+    rem Activate the virtual environment
+    call %SETUP% || ( echo ERROR: Virtual environment activation FAIL^^! Attempt manual & cmd /k )
+
+:: ________________________________________________________________________________________________________________________________________
+
+:runFile
+
+    rem user wants to debug -> enable cmd /k 
+    if %debug% neq 0 ( 
+        echo debuggin^^! 
+        %pyPATHs% %repoPATHs%%file% || ( echo ERROR DEBUG: oh lets get it & cmd /k )
+    )
+    if %debug% == 0 ( 
+        echo +ultra-mode...
+        %pyPATHs% %repoPATHs%%file% || ( echo oh hell nah...try again & pause & goto :eof )
+    )
 
 rem *********************************************************************************************
 rem *******   exit procedures                            ***************************************
@@ -292,5 +332,6 @@ rem ****************************************************************************
     echo -n | set /p=BYE^!
 
     endlocal
+    deactivate
     rem exit from ALL connected and running scripts  
     exit 
