@@ -164,4 +164,4 @@ cython_debug/
 
 /__fsoVenv
 /__venv
-!__setupFiles/_batchLaunchers/.relativeUse/*.bat
+!__setupFiles/_batchLaunchers/.relativeUse/
