@@ -1,18 +1,17 @@
 
+rem *********************************************************************************************
+rem *********************************************************************************************
+rem *********************************************************************************************
+
 @echo off & setlocal enabledelayedexpansion 
 %= above line = MUST have pc not remember variables to enviroment DO NOT REMOVE =% 
-
 
 :: ________________________________________________________________________________________________________________________________________
         %= output script information to terminal for user  =% 
 
 
-if %loser%==True ( goto :initilization ) else ( echo testing intro... )
-
-
-echo -- aloeBrooks automated system software launcher file -- 
-echo Last mod: Sep 15 2025
-echo Created by: Allie Christensen Brooks
+set "lastMod=Sep 22 2025"
+set "title=automated system software "
 
 :: ________________________________________________________________________________________________________________________________________
 :: ________________________________________________________________________________________________________________________________________
@@ -20,11 +19,8 @@ echo Created by: Allie Christensen Brooks
 
 :initilization
 
-echo ****************** & echo starting up... & echo ******************
 
-cd /d "%~dp0\..\.." & call :displayCwd
-
-if  %loser%==True ( echo loserville ) else ( echo its giving our great trimphed czar & pause )
+if %loser%==True ( echo  its giving our great trimphed czar & goto :start ) else ( echo testing intro... )
 
 rem *********************************************************************************************
         %= import funks.bat and requirements.txt and env_vars.txt =% 
@@ -34,9 +30,19 @@ rem load file with batch functions to initalize terminal operation and repo loca
 call :load_funks | echo ERROR loading funkies oh no!
 
 rem run funks.bat to set repo location PATH_ and respectively python or winpython path 
-call :startFunky
+call :startFunky | echo ERROR starting the funk 
 
-if  %loser%==True ( goto :startBat ) else ( echo "Your a winner chckn dinner, env comming in hot" & pause )
+
+call :helloSoftware %title% %lastMod%
+
+
+rem *********************************************************************************************
+rem *********************************************************************************************
+rem *********************************************************************************************
+
+
+:start
+echo started... 
 :: ________________________________________________________________________________________________________________________________________
 :: ________________________________________________________________________________________________________________________________________
                 %= activate environment and move into working dir =% 
