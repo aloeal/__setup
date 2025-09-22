@@ -72,6 +72,7 @@ set bonus=1
 set "venvName=__mooVenv"
 set "flexDir=_init"
 set "initLink=https://github.com/aloeal/_flex.git"
+rem below checked for removal
 set subs=__setup
 
 set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
