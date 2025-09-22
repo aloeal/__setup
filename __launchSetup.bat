@@ -1,50 +1,37 @@
-rem *********************************************************************************************
-rem *********************************************************************************************
-rem *********************************************************************************************
-
 @echo off & setlocal enabledelayedexpansion 
-%= above line = MUST have pc not remember variables to enviroment DO NOT REMOVE =% 
-
-
-:: ________________________________________________________________________________________________________________________________________
+rem above line = MUST have pc not remember variables to enviroment DO NOT REMOVE
+rem *********************************************************************************************
         %= output script information to terminal for user  =% 
 
 
-if %loser%==True ( goto :initilization ) else ( echo testing intro... )
+set "lastMod=Sep 22 2025"
+set "title=automated system software launcher "
 
-
-echo -- aloeBrooks automated software initilization -- 
-echo Last mod: Sep 15 2025
-echo Created by: Allie Christensen Brooks
-
-:: ________________________________________________________________________________________________________________________________________
-:: ________________________________________________________________________________________________________________________________________
-        %= ensure prop dir and load files needed to setup software in __setupFiles =% 
-
-:initilization
-
-echo ****************** & echo starting up... & echo ******************
-
-cd /d "%~dp0\..\.." & call :displayCwd
-
-if  %loser%==True ( echo loserville ) else ( echo its giving our great trimphed czar & pause )
-
+rem *********************************************************************************************
+rem *********************************************************************************************
 rem *********************************************************************************************
         %= import funks.bat and requirements.txt and env_vars.txt =% 
 
+:initilization
+
+if %loser%==True ( echo  its giving our great trimphed czar & goto :start ) else ( echo testing intro... )
 
 rem load file with batch functions to initalize terminal operation and repo location
 call :load_funks | echo ERROR loading funkies oh no!
 
 rem run funks.bat to set repo location PATH_ and respectively python or winpython path 
-call :startFunky
+call :_init %file% | echo ERROR starting the funk 
 
-if  %loser%==True ( goto :startBat & pause ) else ( echo "Your a winner chckn dinner, env comming in hot" & pause )
+call :helloSoftware %title% %lastMod%
+
 
 rem *********************************************************************************************
 rem *********************************************************************************************
 rem *********************************************************************************************
 
+
+:start
+echo started... and ready? & pause 
 
 :: ________________________________________________________________________________________________________________________________________
 
