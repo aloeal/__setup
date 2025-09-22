@@ -14,13 +14,14 @@ rem ****************************************************************************
 
 :initilization
 
-if %loser%==True ( echo  its giving our great trimphed czar & goto :start ) else ( echo testing intro... )
 
 rem load file with batch functions to initalize terminal operation and repo location
-call :load_funks | echo ERROR loading funkies oh no!
+call :load_funks | echo ERROR loading funkies oh no! & pause
 
 rem run funks.bat to set repo location PATH_ and respectively python or winpython path 
-call :_init %file% | echo ERROR starting the funk 
+call :_init %file% | echo ERROR starting the funk & pause 
+
+if %loser%==True ( echo  its giving our great trimphed czar & goto :start ) else ( echo testing intro... )
 
 call :helloSoftware %title% %lastMod%
 
@@ -650,10 +651,14 @@ if /i !answer! == n ( echo __setup done^! & call :close )
     if %errorlevel% neq 0 ( echo "ERROR versions %errorlevel%" & goto :askVersion )
     echo ------ & exit /b
 
-:load_var
-    call %setupFiles%__files\env_vars.txt
-    echo "      == RELOADED env_var.txt =="
+
+:load_funks
+    cd . 
+    echo here
+    cd 
+    for /f "delims=" %%F in ('where funks.bat') do ( call "%%F" || echo error funks & pause & exit /b) 
     exit /b
+
 
 :close
     echo vevn deactivated^.
