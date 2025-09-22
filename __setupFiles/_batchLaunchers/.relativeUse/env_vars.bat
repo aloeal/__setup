@@ -50,6 +50,8 @@ set skipBonus=1
 set closetime=30
 set waittime=3
 set "loser=False"
+set "flagVenv=False"
+
 set exeName=None
 
 
