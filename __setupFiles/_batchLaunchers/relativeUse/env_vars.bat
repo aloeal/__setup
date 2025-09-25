@@ -4,7 +4,7 @@ rem _________________________________________________________________________
 rem CHANGE BELOW
 
 rem repository information for the launcher to import 
-set "repo=moomoo"
+set "repo=mooMoo"
 set "branch=main"
 
 rem potential repository paths
@@ -16,10 +16,10 @@ set "file=agNext_Gen.py"
 
 
 rem installtion information for system software 
-set "pyType=Python"
+set "pyType=python"
 set "pyVersion=3.8"
-set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
-set pyPATHs="C:\Program Files\ "C:\" "C:\Users\"
+rem set pyPATHs="C:\Program Files\WPy64-3940" "C:\WinPy3.9.4\WPy64-3940\python-3.9.4.amd64" "C:\WPy64-3940\python-3.9.4.amd64"
+set pyPATHs="C:\Program Files\" "C:\" "C:\Users\fcomb\" "C:\Users\anc32\" 
 
 
 set skipPython=0
@@ -58,9 +58,8 @@ set exeName=None
 
 set "repoNames=%repo% %repo%-local %repo%-main"
 
-
-if /I %pyType%=="python" ( set exeName="python.exe" ) 
-if /I %pyType%=="winpython" (set exeName="WinPython Command Prompt.exe" ) else ( echo !pyType! & pause & cmd /k & set "exename=!pyType!.exe" )
+if /I %pyType%=="winpython" (set exeName="WinPython Command Prompt.exe" )
+if /I %pyType%=="python" ( set exeName="python.exe" ) else ( echo !pyType! & set "exename=!pyType!.exe" )
 echo set exename
 echo %exeName%
 
@@ -74,8 +73,9 @@ set "flexDir=_init"
 set "initLink=https://github.com/aloeal/_flex.git"
 rem below checked for removal
 set subs=__setup
-
+ 
 set "SETUP=%PATH_%%venvName%\Scripts\activate.bat" 
 set "WORK_DIR=%PATH_%%dir%%flexDir%"
 
 
+goto :eof
