@@ -14,12 +14,17 @@ rem ****************************************************************************
 
 :initilization
 
-
+echo Loading funks
 rem load file with batch functions to initalize terminal operation and repo location
-call :load_funks | echo ERROR loading funkies oh no! & pause
+call :load_funks || (echo ERRORa loading funkies oh no! & pause)
+echo Loaded funks
+call %funks% :startFunky || (echo ERRORb loading funkies oh no! & pause)
 
-rem run funks.bat to set repo location PATH_ and respectively python or winpython path 
-call :_init %file% | echo ERROR starting the funk & pause 
+echo Loading setup
+
+echo Loaded setup
+
+rem call :startFunky || (echo ERRORb starting the funk & pause)
 
 if %loser%==True ( echo  its giving our great trimphed czar & goto :start ) else ( echo testing intro... )
 
@@ -388,56 +393,6 @@ echo         Containing DIR: ^> %cleanInstall%
 echo -------------------------------------------- 
 
 
-
-:: ________________________________________________________________________________________________________________________________________
-
-:chkVenv
- 
-set "venvPath_=%PATH_%%venvName%\" 
-
-
-if %skipVenv% == 1 ( echo Skipping venv -- & goto :lastjubba )
-
-echo -n | set /p =Checking for venv... %venvPath_%  
- 
-
-:: Ensure virtual environment exists if not create it with local python installed
-if exist %venvPath_% (
-    echo A virtual environment exists^^!
-
-    rem default will delete old venv each time
-    if %debug% == 1 ( echo -n | set /p=rming... & call :removeVenv )
-
-    rem echo boom 
-) 
-
-:: create venv fresh each time 
-if not exist %venvPath_% ( echo NO virutal environment. & echo Creating...!venvPath_!.... & goto :createVenv )
-
-echo.
-echo --------------------------------------------
-echo --------------------------------------------
-
-:: ________________________________________________________________________________________________________________________________________
-
-:actVenv
-
-if %debug% == 1 ( echo trying to activate new venv... )
-
-cd "%venvPath_%"
-rem echo moved 
-rem cd 
-
-:: Activate the virtual environment
-call Scripts\activate.bat || ( 
-    echo oh no 
-    if %errorlevel% neq 0 (
-    echo Attempted to call activation of env...ERRORa
-    if %debug% == 0 ( echo NOT in DEBUG MODE... & echo -n | ping -n 10 127.0.0.1 >nul && echo closing! & call :close )
-    if %debug% == 1 ( echo Enabling cmd... && echo Ready! & cmd /k ) )
-)
-echo VENV ACTIVATED ----
-
 :: ________________________________________________________________________________________________________________________________________
 
 
@@ -608,13 +563,7 @@ if /i !answer! == n ( echo __setup done^! & call :close )
     rem when no error or
     echo -n | set /p="deletered that dusty env^! " & exit /b
 
-:createVenv
-    rem new venv creation
-    echo %venvPath_%
-    "%PYTHON_EXE%" -m venv %venvPath_% --prompt "fsoENV" 2>&1 || ( echo ERRORa !errorlevel!: Attempted to make env. && if %debug% == 1 ( echo Enabling cmd... && echo Ready! & cmd /k ) else ( echo oopsie & call :close ) )
-    rem if %debug% == 0 ( echo NOT in DEBUG MODE... & echo -n | ping -n 10 127.0.0.1 >nul && echo moving on! )
-    echo -n | set /p="Fresh venv created! "
-    goto :actVenv
+
 
 :removePy
     rmdir /s /q %setupPath_%\__files\ 2>&1 || echo ERROR !errorlevel!: tried to rm old python dir  & exit /b
@@ -653,10 +602,13 @@ if /i !answer! == n ( echo __setup done^! & call :close )
 
 
 :load_funks
-    cd . 
-    echo here
-    cd 
-    for /f "delims=" %%F in ('where funks.bat') do ( call "%%F" || echo error funks & pause & exit /b) 
+
+    set "funks=.\__setupFiles\_batchLaunchers\relativeUse\funks.bat"
+    call %funks% || (
+        echo [ERROR] Failed to load funks.bat
+        exit /b 
+    )
+    echo [INFO] == Reloaded funks.bat ==
     exit /b
 
 
