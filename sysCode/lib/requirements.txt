@@ -1,0 +1,30 @@
+# Required packages for the AgNext data pull and process software: 
+# Implemented by venvSetup.bat
+# note: bat file will install necessary python and below 
+# Dependancy versions for system software below, this file used by _flex in automated setup procedures
+
+# requested dep. python 3.8 and scipy numpy matplotlib jupyter jupyterlab spyder ipython pandas lmfit=0.9.12 geopy pyFFTW AllanTools h5py multiprocess
+
+
+
+# scipy numpy matplotlib jupyter jupyterlab spyder ipython pandas lmfit=0.9.12 geopy pyFFTW AllanTools h5py multiprocess
+
+#grabs compatible version if no version specified?
+anytree
+git-lfs
+scipy 
+numpy 
+matplotlib 
+jupyter 
+jupyterlab 
+spyder 
+ipython 
+pandas 
+lmfit=0.9.12 
+geopy 
+pyFFTW 
+AllanTools 
+h5py 
+multiprocess
+
+
